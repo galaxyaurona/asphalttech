@@ -1,0 +1,2 @@
+module CallupRegisterHelper
+end

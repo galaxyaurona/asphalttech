@@ -1,0 +1,45 @@
+<md-dialog style="width:80%" layout-padding>
+    <md-dialog-content>
+        <ng-form name="addAJob">
+            <h3 style="margin-top:0px">Search for job</h3>
+            <md-content layout-fill layout="column" layout-gt-xs="row">
+                <md-input-container class="md-block" flex-gt-xs="30">
+                    <label>Client name</label>
+                    <input ng-model="jdc.query.client_name" required name="clientName">
+                    <div class="md-custom-warn" ng-messages="addAJob.clientName.$error" ng-if="addAJob.clientName.$dirty || addAJob.$submitted" role="alert" multiple>
+                        <div ng-message="required" class="my-message">Client Name by cannot be empty.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-xs="30">
+                    <label>Job name</label>
+                    <input ng-model="jdc.query.job_name" required name="jobName">
+
+                </md-input-container>
+                <md-button class="md-primary md-fab md-icon" type="button" ng-click="jdc.searchForJob(addAJob)" style="float:right !important"><i class="fa fa-search"></i></md-button>
+            </md-content>
+        </ng-form>
+
+        <md-content ng-if="jdc.queryResults.length==0">
+            <h3> There is no job matching this criteria</h3>
+        </md-content>
+
+        <md-content ng-if="jdc.queryResults.length>0">
+            <md-list ng-cloak>
+                <md-subheader class="md-sticky">Client name: Job Name</md-subheader>
+                <md-list-item ng-repeat="result in jdc.queryResults" class="secondary-button-padding" ng-click="doPrimaryAction($event)">
+                    <p>{{result.client_name + " : " + result.name }}</p>
+                    <md-button class="md-primary md-raised" ng-click="jdc.selectJob(result,$event)">Select</md-button>
+                </md-list-item>
+            </md-list>
+
+
+        </md-content>
+        <md-dialog-actions layout="row">
+            <md-button class="md-warn md-raised pull-left" type="button" ng-click="jdc.cancel()">
+                Cancel
+            </md-button>
+            <span flex></span>
+        </md-dialog-actions>
+
+    </md-dialog-content>
+</md-dialog>

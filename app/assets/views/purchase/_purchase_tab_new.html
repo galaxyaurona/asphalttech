@@ -1,0 +1,170 @@
+<form style="padding:10px" ng-submit="pcc.create(newPurchaseForm)" name="newPurchaseForm" novalidate class="md-whiteframe-3dp">
+
+   <md-content layout-fill layout="column" layout-gt-xs="row">
+      <md-content layout="column" flex-gt-xs="70">
+         <md-content layout="column" layout-gt-xs="row">
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Order by</label>
+               <input ng-model="pcc.newPurchase.order_by" required name="order_by">
+               <div ng-messages="newPurchaseForm.order_by.$error" role="alert" multiple>
+                  <div ng-message="required" class="my-message">Order by cannot be empty.</div>
+               </div>
+            </md-input-container>
+            <md-content layout="column">
+               <md-content layout-gt-xs="row" layout="column">
+                  <label>Date ordered</label>
+                  <md-datepicker style="margin-right:0px;padding-right:0px" required name="date_ordered" ng-model="pcc.newPurchase.date_ordered" md-placeholder="Enter date ordered">
+                  </md-datepicker>
+               </md-content>
+
+               <div flex="100" ng-messages="newPurchaseForm.date_ordered.$error" role="alert" ng-if="newPurchaseForm.date_ordered.$dirty || newPurchaseForm.$submitted">
+                  <div ng-message="required" class="md-custom-warn">Next due date cannot be empty.</div>
+                  <div ng-message="valid" class="md-custom-warn">Invalid date format.</div>
+               </div>
+            </md-content>
+
+
+         </md-content>
+         <md-content layout="column" layout-gt-xs="row" flex="100">
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Supplier</label>
+               <input ng-model="pcc.newPurchase.supplier" required name="supplier">
+               <div ng-messages="newPurchaseForm.supplier.$error" role="alert" multiple>
+                  <div ng-message="required" class="my-message">Supplier cannot be empty.</div>
+               </div>
+            </md-input-container>
+            <md-content layout="column">
+               <md-content layout-gt-xs="row" layout="column">
+                  <label>Date of work</label>
+                  <md-datepicker style="margin-right:0px;padding-right:0px" name="date_of_work" ng-model="pcc.newPurchase.date_of_work" md-placeholder="Enter date of work">
+                  </md-datepicker>
+               </md-content>
+
+               <div flex="100" ng-messages="newPurchaseForm.date_of_work.$error" role="alert">
+                  <div ng-message="valid" class="md-custom-warn">Invalid date format.</div>
+               </div>
+            </md-content>
+
+         </md-content>
+
+         <md-content layout="column" layout-gt-xs="row" flex="100">
+            <md-input-container class="md-block" flex-gt-xs="20">
+               <label>Order type</label>
+               <md-select flex name="newOrderType" ng-model="pcc.newPurchase.order_type" required>
+                  <md-option></md-option>
+                  <md-option ng-value="type.value" ng-repeat="type in pcc.orderTypes">{{type.label}}</md-option>
+               </md-select>
+               <div class="md-custom-warn" ng-messages="newPurchaseForm.newOrderType.$error" ng-if="newPurchaseForm.newOrderType.$dirty || newPurchaseForm.$submitted">
+                  <div ng-message="required">Order type is required</div>
+               </div>
+            </md-input-container>
+            <md-input-container class="md-block" flex="100">
+               <label>Note</label>
+               <textarea ng-model="pcc.newPurchase.note" class="md-raised" columns="1" rows="3"></textarea>
+            </md-input-container>
+         </md-content>
+
+
+
+      </md-content>
+
+
+
+      <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-save fa-lg'></i></md-button>
+   </md-content>
+   <md-divider style="padding-bottom:5px"></md-divider>
+   <md-content layout-fill>
+      <md-content layout-gt-xs="row" layout="column">
+         <h3 flex-gt-xs="50">Job</h3>
+         <md-button flex-gt-xs="30" class="md-primary md-raised" ng-click="pcc.addAJob(pcc.newPurchase,$event)" flex="100" flex-gt-md="auto">
+            Add a job
+         </md-button>
+      </md-content>
+      <md-content layout-gt-xs="row" layout="column" ng-if="pcc.newPurchase.job != undefined">
+ 
+         <md-content flex-gt-xs="50" flex style="padding:15px">
+            <span style="font-size:1.3em"><strong>Client name :</strong> {{pcc.newPurchase.job.client_name}}</span>
+         </md-content>
+         <md-content flex-gt-xs="50" flex style="padding:15px">
+            <span style="font-size:1.3em"><strong>Job name :</strong> {{pcc.newPurchase.job.name}}</span>
+         </md-content>
+
+      </md-content>
+   </md-content>
+   <md-divider style="padding-bottom:5px"></md-divider>
+   <md-content layout-fill>
+      <md-content layout-gt-xs="row" layout="column">
+         <h3 flex-gt-xs="50">Items</h3>
+         <md-button class="md-primary md-fab md-icon" ng-click="pcc.addNewPurchaseItem(newPurchaseForm,pcc.newPurchase.purchase_items,$event)">
+            <i class='fa fa-plus fa-lg'></i>
+         </md-button>
+      </md-content>
+      <md-content layout="column" layout-gt-xs="row">
+         <md-input-container class="md-block" flex-gt-xs="30">
+            <label>Item name</label>
+            <input ng-model="pcc.newItem.item_name" name="item_name">
+            <div ng-messages="newPurchaseForm.item_name.$error" role="alert" multiple ng-if="newPurchaseForm.item_name.$dirty && pcc.newItem.item_name == undefined">
+               <div >Item name is required</div>
+            </div>
+         </md-input-container>
+         <md-input-container class="md-block" flex-gt-xs="30">
+            <label>Estimate cost</label>
+            <input ng-model="pcc.newItem.estimate" type="number" name="estimate">
+            <div ng-messages="newPurchaseForm.estimate.$error" role="alert" multiple ng-if="newPurchaseForm.estimate.$dirty && pcc.newItem.actual == undefined && pcc.newItem.estimate == undefined">
+               <div>Estimate or actual must be present</div>
+            </div>
+         </md-input-container>
+
+         <md-input-container class="md-block" flex-gt-xs="30">
+            <label>Actual cost</label>
+            <input ng-model="pcc.newItem.actual" type="number" name="actual">
+            <div ng-messages="newPurchaseForm.actual.$error" role="alert" multiple ng-if="newPurchaseForm.actual.$dirty && pcc.newItem.actual == undefined && pcc.newItem.estimate == undefined">
+               <div>Estimate or actual must be present</div>
+            </div>
+         </md-input-container>
+
+
+      </md-content>
+
+      <md-content layout="column" layout-gt-xs="row" flex="100">
+         <md-input-container class="md-block" flex-gt-xs="30">
+            <label>Supplier invoice number</label>
+            <input ng-model="pcc.newItem.invoice_number" name="invoice_number">
+
+         </md-input-container>
+         <md-input-container class="md-block" flex="100">
+            <label>Note</label>
+            <textarea ng-model="pcc.newItem.note" class="md-raised" columns="1" rows="3"></textarea>
+         </md-input-container>
+      </md-content>
+
+      <md-table-container>
+         <table md-table>
+            <thead md-head md-order="query.order" md-on-reorder="logOrder">
+               <tr md-row>
+                  <th md-column md-order-by="item_name"><span><strong>Item name</strong></span></th>
+
+                  <th md-column md-numeric md-order-by="estimate"><span>Estimate ($)</span></th>
+                  <th md-column md-numeric md-order-by="actual"><span>Actual($)</span></th>
+                  <th md-column md-numeric md-order-by="note"><span>Note</span></th>
+                  <th md-column md-numeric md-order-by="invoice_number"><span>Invoice number</span></th>
+                  <th md-column md-numeric><span>Remove</span></th>
+               </tr>
+            </thead>
+            <tbody md-body>
+               <tr md-row md-select="material" ng-repeat="item in pcc.newPurchase.purchase_items | orderBy: query.order">
+                  <td md-cell><strong>{{item.item_name}}</strong></md-cell>
+                     <td md-cell>$ {{item.estimate}} </td>
+                     <td md-cell>$ {{item.actual}}</td>
+                     <td md-cell>{{item.note}}</td>
+                     <td md-cell>{{item.invoice_number}}</td>
+                     <td md-cell>
+                        <md-button type="button" ng-click="pcc.removePurchaseItem(pcc.newPurchase.purchase_items,item)" class="md-warn md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                     </td>
+               </tr>
+            </tbody>
+         </table>
+      </md-table-container>
+
+
+</form>

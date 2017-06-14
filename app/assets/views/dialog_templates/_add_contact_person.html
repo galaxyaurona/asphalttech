@@ -1,0 +1,58 @@
+<md-dialog style="width:80%" layout-padding>
+   <md-dialog-content>
+      <ng-form name="addNewContactPerson">
+         <h3 style="margin-top:0px">New contact person </h3>
+         <md-content layout-fill layout="column" layout-gt-xs="row">
+            <md-content layout="column" flex-gt-xs="70">
+
+               <md-content layout="column" layout-gt-xs="row">
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Name</label>
+                     <input ng-model="dc.contactPerson.name" required name="name">
+                     <div ng-messages="addNewContactPerson.name.$error" role="alert" multiple>
+                        <div ng-message="required" class="my-message">Contact person name cannot be empty.</div>
+                     </div>
+                  </md-input-container>
+
+               </md-content>
+
+               <md-content layout="column" layout-gt-xs="row">
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Role</label>
+                     <input ng-model="dc.contactPerson.role" type="text" name="role">
+                  </md-input-container>
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Email</label>
+                     <input ng-model="dc.contactPerson.email" type="email" name="email">
+                     <div class="md-custom-warn" ng-messages="addNewContactPerson.email.$error" ng-if="addNewContactPerson.email.$dirty || addNewContactPerson.$submitted">
+                        <div ng-message="email">Please enter a valid email address</div>
+                     </div>
+                  </md-input-container>
+               </md-content>
+               <md-content layout="column" layout-gt-xs="row">
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Office contact</label>
+                     <input ng-model="dc.contactPerson.office_contact" name="officeContact">
+                  </md-input-container>
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Mobile contact</label>
+                     <input ng-model="dc.contactPerson.mobile_contact" name="mobileContact">
+                  </md-input-container>
+               </md-content>
+
+            </md-content>
+         </md-content>
+
+         <md-dialog-actions layout="row">
+            <md-button class="md-warn md-raised pull-left" type="button" ng-click="dc.cancel()">
+               Cancel
+            </md-button>
+            <span flex></span>
+
+            <md-button ng-click="dc.adding(addNewContactPerson,dc.contactPerson)" class="pull-right md-primary md-raised" style="margin-right:20px;">
+               Add
+            </md-button>
+         </md-dialog-actions>
+      </ng-form>
+   </md-dialog-content>
+</md-dialog>

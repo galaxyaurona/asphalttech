@@ -1,0 +1,150 @@
+<md-content class="md-inline-form">
+      <md-subheader class="md-no-sticky"><h3>Contractors</h3></md-subheader>
+      <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="selectedTab">
+         <md-tab label="View"><!-- Viewing existing employee records -->
+            <md-content class="md-padding">
+               <md-list>
+                  <md-list-item layout-gt-sm="row">
+                  <div class="row" style="width:100%" ng-hide="cc.contractors.length == 0">
+                  <div class="col-xs-2">
+                          <h5>Name/Company</h5>
+                        </div>
+                        <div class="col-xs-3">
+                           <md-input-container style="margin:0px">
+                           <label>Search Name/Company</label>
+                           <input name="searchName" ng-model="contractorQuery.name">
+                           </md-input-container>
+                        </div>
+                        <div class="col-xs-3">
+                          <h5>Contact</h5>
+                        </div>
+                        <div class="col-xs-4">
+                          <h5>Notes</h5>
+                        </div>
+                        </div>
+                        
+                        </md-list-item>
+                        <md-list-item layout-gt-sm="row" ng-show="cc.contractors.length == 0">
+                           <div  style="width:100%">No Contractors Found!</div>
+                        </md-list-item>
+                  <md-list-item  ng-repeat="contractor in cc.contractors | filter:contractorQuery" layout-gt-sm="row">
+                     <div class="row" style="width:100%">
+                        <div class="col-xs-5">
+                           <a ng-click="selectContractor(contractor)" class="clickable"><h5>{{contractor.name}}</h5></a>
+                        </div>
+                        <div class="col-xs-3">
+                           {{contractor.contact_no}}
+                        </div>
+                        <div class="col-xs-4"> <!-- TODO: Ensure this has a max length and truncates a ... if max length hit to hide rest of notes -->
+                           {{contractor.description}}
+                        </div>
+                     </div>
+                  </md-list-item>
+               </md-list>
+            </md-content>
+         </md-tab>
+         <md-tab label="New"><!-- New employee -->
+            <h4>Contractor Details <button class="btn btn-default" ng-click="addNew()" ng-disabled="!newContractor.name">Save</button></h4>
+            <form name="newContractorForm">
+               <div class="row">
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                        <label>Company/Contractor Name</label>
+                        <input name="newContractorName" required="" md-maxlength="60" ng-model="newContractor.name">
+                        <div ng-messages="newContractorForm.newContractorName.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 60 characters.</div>
+                        </div>
+                     </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                  <label>Contact No</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="newContractorContactNo" required="" ng-model="newContractor.contact_no" md-maxlength="20">
+                  <div ng-messages="newContractorForm.newContractorContactNo.$error">
+                     <div ng-message="required">This is required.</div>
+                     <div ng-message="md-maxlength">Must be less than 20 characters.</div>
+                  </div>
+               </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                      <md-input-container class="md-block">
+                  <label>Contact Email</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="newContractorContactEmail" required="" ng-model="newContractor.email" md-maxlength="20">
+                  <div ng-messages="newContractorForm.newContractorContactEmail.$error">
+                     <div ng-message="required">This is required.</div>
+                     <div ng-message="md-maxlength">Must be less than 40 characters.</div>
+                  </div>
+               </md-input-container>
+                  </div>
+               </div> <!-- /row -->
+               <md-input-container class="md-block">
+                  <label>Notes/Description</label>
+                  <input name="newContractorNotes" ng-model="newContractor.description" md-maxlength="200">
+                  <div ng-messages="newContractorForm.newContractorNotes.$error">
+                     <div ng-message="md-maxlength">Must be less than 200 characters.</div>
+                  </div>
+               </md-input-container>
+               <br>
+               </form>
+         </md-tab>
+         
+         <!--Selected employee edit page-->
+         <md-tab label="Selected" ng-disabled="!selected.name"><!-- New employee -->
+            <form name="ContractorForm">
+               <div class="row">
+                  <div class="col-md-12">
+                     <md-button ng-click="edit($event)" class="md-raised">Save Changes</md-button>
+                     <md-button ng-click="delete(selected.id,$event)" class="md-warn md-raised" ng-hide="editMode">Delete</md-button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-12">
+                     <h4>Contractor Details</h4>
+                  </div>
+               </div>
+               
+               <div class="row">
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                        <label>Company/Contractor Name</label>
+                        <input name="ContractorName" required="" md-maxlength="60" ng-model="selected.name">
+                        <div ng-messages="ContractorForm.ContractorName.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 60 characters.</div>
+                        </div>
+                     </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                  <label>Contact No</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="ContractorContactNo" required="" ng-model="selected.contact_no" md-maxlength="20">
+                  <div ng-messages="ContractorForm.ContractorContactNo.$error">
+                     <div ng-message="required">This is required.</div>
+                     <div ng-message="md-maxlength">Must be less than 20 characters.</div>
+                  </div>
+               </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                      <md-input-container class="md-block">
+                  <label>Contact Email</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="ContractorContactEmail" required="" ng-model="selected.email" md-maxlength="20">
+                  <div ng-messages="ContractorForm.ContractorContactEmail.$error">
+                     <div ng-message="required">This is required.</div>
+                     <div ng-message="md-maxlength">Must be less than 40 characters.</div>
+                  </div>
+               </md-input-container>
+                  </div>
+               </div> <!-- /row -->
+               <md-input-container class="md-block">
+                  <label>Notes/Description</label>
+                  <input name="ContractorNotes" ng-model="selected.description" md-maxlength="200">
+                  <div ng-messages="ContractorForm.ContractorNotes.$error">
+                     <div ng-message="md-maxlength">Must be less than 200 characters.</div>
+                  </div>
+               </md-input-container>
+            </form>
+         </md-tab>
+      </md-tabs>
+</md-content>
+</div>

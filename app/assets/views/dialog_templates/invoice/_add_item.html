@@ -1,0 +1,47 @@
+<md-dialog style="width:80%" layout-padding>
+   <md-dialog-content>
+
+      <h3 style="margin-top:0px">Add Item </h3>
+      <md-content layout="column">
+         <md-input-container>
+            <label>Mix</label>
+            <md-select ng-model="aidc.selectedMix" ng-change="aidc.logMix()">
+               <md-option ng-repeat="mix in aidc.processedDockets" ng-value="mix">
+                  {{mix.name}}
+               </md-option>
+            </md-select>
+            <div ng-show="aidc.noMix" class="md-custom-warn">
+               Please select a mix first
+            </div>
+            <div ng-show="aidc.noDocket" class="md-custom-warn">
+               Please select at least one dockets
+            </div>
+         </md-input-container>
+         <md-list ng-cloak>
+            <md-subheader class="md-no-sticky">
+               <strong>Docket associate with this mix</strong>
+               <md-checkbox class="md-secondary pull-right" ng-model="aidc.selectedMix.selectAll" ng-change="aidc.changeSelectAll()"> <span ng-hide="aidc.selectedMix.selectAll">Select all</span> <span ng-show="aidc.selectedMix.selectAll">Deselect all</span></md-checkbox>
+            </md-subheader>
+            <md-list-item ng-repeat="docket in aidc.selectedMix.list" style="width:100%">
+               <p> Docket <strong>{{ docket.docket_no}} </strong> by {{docket.employee_name}} </p>
+               <md-checkbox class="md-secondary pull-right" ng-model="docket.selected"></md-checkbox>
+            </md-list-item>
+         </md-list>
+      </md-content>
+
+
+      <md-dialog-actions layout="row">
+         <md-button class="md-warn md-raised pull-left" type="button" ng-click="aidc.cancel()">
+            Cancel
+         </md-button>
+         <span flex></span>
+         <md-button ng-click="aidc.addingSimple()" type="button" class="pull-right md-accent md-raised" style="margin-right:10px;">
+            Add a simple item
+         </md-button>
+         <md-button ng-click="aidc.addingFromSelection()" type="button" class="pull-right md-primary md-raised" style="margin-right:10px;">
+            Add from selection
+         </md-button>
+      </md-dialog-actions>
+
+   </md-dialog-content>
+</md-dialog>

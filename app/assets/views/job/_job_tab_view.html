@@ -1,0 +1,289 @@
+<div class="row">
+   <div class="col-xs-6">
+      <h4>Job Details 
+         <md-button class="md-raised" ng-click="editJob()" ng-disabled="!jc.selected.name || !jc.selected.client_id">Save Changes</md-button>
+         <md-button class="md-raised" ng-click="deleteJob(jc.selected.id,$event)">Delete Job</md-button>
+         </h4>
+      <md-list>
+         <form name="JobForm">
+            <div class="row">
+               <div class="col-xs-7">
+                  <md-input-container class="md-block">
+                     <label>Name</label>
+                     <input name="jc.newJobName" required="" md-maxlength="50" ng-model="jc.selected.name">
+                     <div ng-messages="JobForm.jc.newJobName.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                     </div>
+               </div>
+               
+               <div class="col-xs-5" style="padding-top:15px">
+                  <form name="jobDateForm"> <!-- this doesnt work with messages -->
+                      <md-datepicker ng-model="jc.selected.job_date" required="" md-placeholder="Enter Job Date"></md-datepicker>
+                         <div class="validation-messages" ng-messages="jobDateForm.dateField.$error">
+                             <div ng-message="required">This is required!</div>
+                       </div>
+                  </form>
+               </div>
+            </div>
+            </md-input-container>
+            <div class="row">
+               <div class="col-xs-8">
+                  <div>
+                      <h5><md-button class="md-raised" ng-click="showPickClientEdit($event)">Change Client</md-button> {{jc.selected.client_name}} DEBUG: {{jc.selected.client_id}}</h5>
+                  </div>
+               </div>
+               <div class="col-xs-4">
+                  <md-input-container class="md-block" flex-gt-xs="50">
+                    <label>Job Type</label>
+                    <md-select flex name="jobType" ng-model="jc.selected.job_type" required>
+                       <md-option></md-option>
+                       <md-option ng-value="type.data" ng-repeat="type in job_types">{{type.name}}</md-option>
+                    </md-select>
+                    <div class="md-custom-warn" ng-messages="newJobForm.jobType.$error" ng-if="JobForm.newQuoteType.$dirty || JobForm.newQuoteType.$submitted">
+                       <div ng-message="required">Job type is required</div>
+                    </div>
+                 </md-input-container>
+               </div>
+            </div>
+            <br>
+            <md-input-container class="md-block">
+               <label>Notes</label>
+               <textarea ng-model="jc.selected.notes" columns="1" md-maxlength="200" rows="5"></textarea>
+            </md-input-container>
+         </form>
+      </md-list>
+   </div>
+   <div class="col-xs-6">
+      <div class="row col-md-12">
+         <div ng-show="jc.selected.quote_id">
+            <h4>Quote Details <md-button class="md-raised" ng-click="showPickQuote()">Change Quote</md-button></h4>
+            <h5>{{jc.selected.quote.quote.name}}</h5>
+            <h6>Duration: {{jc.selected.quote.quote.duration}} Days</h6>
+            <h6>Location: {{jc.selected.quote.quote.street}} {{jc.selected.quote.quote.suburb}}</h6>
+            <h6>Cost: ${{jc.selected.quote.quote.cost | number:2}}, Charge: ${{jc.selected.quote.quote.charge | number:2}}</h6>
+            <!--<h6>Employees ~ Cost: ${{jc.selected.quote.quote.snapshot.quote.costing.employee_cost | number:2}}, Charge: ${{jc.selected.quote.quote.snapshot.quote.costing.employee_charge | number:2}}</h6>
+            <h6>Contractors ~ Cost: ${{jc.selected.quote.quote.snapshot.quote.costing.contractor_cost | number:2}}, Charge: ${{jc.selected.quote.quote.snapshot.quote.costing.contractor_charge | number:2}}</h6>
+            <h6>Mixes ~ Cost: ${{jc.selected.quote.quote.snapshot.quote.costing.mix_cost | number:2}}, Charge: ${{jc.selected.quote.quote.snapshot.quote.costing.mix_charge | number:2}}</h6>
+            <h6>Other ~ Cost: ${{jc.selected.quote.quote.snapshot.quote.costing.other_cost | number:2}}, Charge: ${{jc.selected.quote.quote.snapshot.quote.costing.other_charge | number:2}}</h6>-->
+         </div>
+         <div ng-hide="jc.selected.quote_id">
+            <h4>Quote Details</h4>
+            <h5> No quote attached!</h5>
+         </div>
+      </div>
+      <div class="row col-md-12">
+         <div>
+            <h4>Invoice Details <md-button class="md-raised md-primary" ng-click="generateInvoice()">Generate Invoice</md-button></h4>
+         </div>
+      </div>
+   </div>
+</div>
+<br>
+<div class="row">
+   <div class="col-xs-6">
+      <h4>Dockets</h4>
+      <div style="max-height:300px;overflow-y:auto;overflow-x:hide">
+         <md-list>
+            <md-list-item class="row">
+               <div class="col-xs-3">
+                  <h5><a ng-click="">Docket No</a></h5>
+               </div>
+               <div class="col-xs-3">
+                  <h5><a ng-click="">Date</a></h5>
+               </div>
+               <div class="col-xs-4">
+                  <h5><a ng-click="">Material</a></h5>
+               </div>
+               <div class="col-xs-2">
+                   <h5><a ng-click="">Tonnes</a></h5>
+               </div>
+            </md-list-item>
+            <md-list-item ng-repeat="docket in jc.selected.docket_list track by docket.docket_no" class="row">
+               <div class="col-xs-3">
+                 <a ng-click="selectDocket(docket)" class="clickable">{{docket.docket_no}}</a>
+               </div>
+               <div class="col-xs-3">
+                  {{docket.docket_date | date:'dd/MM/yyyy'}}
+               </div>
+               <div class="col-xs-4">
+                  {{docket.mix_name}}
+               </div>
+               <div class="col-xs-2">
+                  {{docket.tonnes_delivered}}
+               </div>
+            </md-list-item>                        
+         </md-list>
+      </div>
+   </div>
+   <div class="col-xs-6">
+      <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="docketTab">
+          <!-- uploading excell doc -->
+          <md-tab label="upload">
+              <h5>Upload exported docket.csv</h5>
+                 <input type = "file" id="docketFile" name="docketFile" accept=".csv"/>
+                 <h6><button type="button" ng-click="uploadDocketFile()" >Upload Dockets</button> This will save automatically </h6>
+                 <div ng-repeat="error in docketErrors">
+                     <uib-alert>Docket: {{error.number}} Failed to import. {{error.error}}</uib-alert>
+                 </div>
+          </md-tab>
+         <!-- New Docket -->
+         <md-tab label="New">
+            <form name="newDocketForm">
+               <div class="row">
+                  <div class="col-xs-6">
+                     <h6>New Docket Info</h6>
+                  </div>
+                  <div class="col-xs-6">
+                      <md-button class="md-raised" ng-click="addDocket()" 
+                      ng-disabled="!jc.newDocket.docket_no || !jc.newDocket.docket_date || !jc.newDocket.employee_id || !jc.newDocket.mix_id || !jc.newDocket.tonnes_delivered">Add</md-button>
+                  </div>
+              </div>
+              <div class="row">
+                 <br>
+                  <div class="col-xs-6">
+                      <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                          <label>Docket Number</label>
+                          <input name="docketNo" required="" ng-model="jc.newDocket.docket_no">
+                          <div ng-messages="newDocketForm.docketNo.$error">
+                              <div ng-message="required">This is required.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+                  <div class="col-xs-6">
+                     <form name="dateForm"> <!-- this doesnt work with messages -->
+                      <md-datepicker ng-model="jc.newDocket.docket_date" required="" md-placeholder="Enter date"></md-datepicker>
+                         <div class="validation-messages" ng-messages="dateForm.dateField.$error">
+                             <div ng-message="required">This is required!</div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-3">
+                      <md-button class="md-raised md-primary" ng-click="showPickEmployee($event)" ng-hide="jc.newDocket.employee_id">Employee</md-button>
+                      <md-button class="md-raised" ng-click="showPickEmployee($event)" ng-show="jc.newDocket.employee_id">Employee</md-button>
+                  </div>
+                  <div class="col-xs-9">
+                      <div ng-show="jc.newDocket.employee_id" style="margin-top:12px">{{jc.newDocket.employee_name}}</div>
+                       <div ng-hide="jc.newDocket.employee_id" style="margin-top:12px">No employee selected!</div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-3">
+                      <md-button class="md-raised md-primary" ng-click="showPickMix($event)" ng-hide="jc.newDocket.mix_id">Mix Type</md-button>
+                      <md-button class="md-raised" ng-click="showPickMix($event)" ng-show="jc.newDocket.mix_id">Mix Type</md-button>
+                  </div>
+                  <div class="col-xs-4">
+                      <div ng-show="jc.newDocket.mix_id" style="margin-top:12px">{{jc.newDocket.mix_name}}</div>
+                       <div ng-hide="jc.newDocket.mix_id" style="margin-top:12px">No mix selected!</div>
+                  </div>
+                  <div class="col-xs-5">
+                     <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Tonnes Delivered</label>
+                          <input name="docketTonnes" required="" min="0" type="number" ng-model="jc.newDocket.tonnes_delivered">
+                          <div ng-messages="newDocketForm.docketTonnes.$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="min">Must be greater than 0.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-6">
+                     <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Street</label>
+                          <input name="docketStreet" md-maxlength="50" ng-model="jc.newDocket.street">
+                          <div ng-messages="newDocketForm.docketStreet.$error">
+                              <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+                  <div class="col-xs-6">
+                      <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Suburb</label>
+                          <input name="docketSuburb" md-maxlength="50" ng-model="jc.newDocket.suburb">
+                          <div ng-messages="newDocketForm.docketSuburb.$error">
+                              <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+              </div>
+          </form>
+         </md-tab>
+         <!-- SELECTED DOCKET -->
+         <md-tab label="Selected" ng-disabled="!jc.selectedDocket.docket_no">
+            <div class="row">
+                  <div class="col-xs-3">
+                      <h4 style="padding-left:15px">Docket: {{jc.selectedDocket.docket_no}}</h4>
+                  </div>
+                  <div class="col-xs-3">
+                      <md-button class="md-fab md-mini md-primary" ng-click="removeDocket($event,jc.selectedDocket)">X</md-button>
+                  </div>
+                  <div class="col-xs-6">
+                      <form name="selectedDateForm"> <!-- this doesnt work with messages -->
+                      <md-datepicker ng-model="jc.selectedDocket.docket_date" required="" md-placeholder="Enter date"></md-datepicker>
+                         <div class="validation-messages" ng-messages="selectedDateForm.dateField.$error">
+                             <div ng-message="required">This is required!</div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-3">
+                      <md-button class="md-raised md-primary" ng-click="showPickEmployeeEdit($event)" ng-hide="jc.selectedDocket.employee_id">Employee</md-button>
+                      <md-button class="md-raised" ng-click="showPickEmployeeEdit($event)" ng-show="jc.selectedDocket.employee_id">Employee</md-button>
+                  </div>
+                  <div class="col-xs-9">
+                      <div ng-show="jc.selectedDocket.employee_id" style="margin-top:12px">{{jc.selectedDocket.employee_name}}</div>
+                       <div ng-hide="jc.selectedDocket.employee_id" style="margin-top:12px">No employee selected!</div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-3">
+                      <md-button class="md-raised md-primary" ng-click="showPickMixEdit($event)" ng-hide="jc.selectedDocket.mix_id">Mix Type</md-button>
+                      <md-button class="md-raised" ng-click="showPickMixEdit($event)" ng-show="jc.selectedDocket.mix_id">Mix Type</md-button>
+                  </div>
+                  <div class="col-xs-4">
+                      <div ng-show="jc.selectedDocket.mix_id" style="margin-top:12px">{{jc.selectedDocket.mix_name}}</div>
+                       <div ng-hide="jc.selectedDocket.mix_id" style="margin-top:12px">No mix selected!</div>
+                  </div>
+                  <div class="col-xs-5">
+                     <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Tonnes Delivered</label>
+                          <input name="selectedDocketTonnes" required="" min="0" type="number" ng-model="jc.selectedDocket.tonnes_delivered">
+                          <div ng-messages="DocketForm.selectedDocketTonnes.$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="min">Must be greater than 0.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+              </div>
+              
+              <div class="row">
+                  <div class="col-xs-6">
+                     <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Street</label>
+                          <input name="selectedDocketStreet" md-maxlength="50" ng-model="jc.selectedDocket.street">
+                          <div ng-messages="newDocketForm.selectedDocketStreet.$error">
+                              <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+                  <div class="col-xs-6">
+                      <md-input-container class="md-block"  style="margin-top:0px;margin-bottom:0px">
+                          <label>Suburb</label>
+                          <input name="selectedDocketSuburb" md-maxlength="50" ng-model="jc.selectedDocket.suburb">
+                          <div ng-messages="newDocketForm.selectedDocketSuburb.$error">
+                              <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                          </div>
+                      </md-input-container>
+                  </div>
+              </div>
+              
+              </form>
+         </md-tab>
+      </md-tabs>
+      <div style="padding-bottom:50px"></div>
+   </div>
+</div>

@@ -1,0 +1,98 @@
+<md-content>
+   <div class="panel panel-primary md-whiteframe-9dp" style="min-width:550px;overflow-x:auto">
+      <div class="panel-heading md-whiteframe-3dp">
+         <h2>Material List</h2>
+
+         <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-search glyphicon-no-top"></i> </span>
+            <input class="form-control" type="text" ng-model="queryMaterial.name" placeholder="Search Material Name" style="max-width:500px">
+            <!-- <span class="input-group-btn"><button class="btn btn-default" ng-click="toggleMoreOption('minute')">More options</button> </span>-->
+         </div>
+
+         <h4>Add new Material</h4>
+         <form name="addMaterialForm" class="bs-form-inline" ng-submit="mtc.add(newMaterial)">
+            <div class="col-sm-9 low-side-padding">
+               <div class="col-xs-2 col-sm-3 low-side-padding">
+                  <label for="name" style="font-size:1em">Material</label>
+               </div>
+               <div class="col-xs-10 col-sm-9 low-side-padding ">
+                  <input type="text" class="form-control bs-form-control-inline" name="name" required min="0" ng-model="newMaterial.name">
+               </div>
+            </div>
+            <div class=" col-sm-3 low-side-padding">
+               <div class="col-xs-2 col-sm-5 low-side-padding">
+                  <label for="losses" style="font-size:1em">Losses(%)</label>
+               </div>
+               <div class="col-xs-10 col-sm-7 low-side-padding">
+                  <input type="number" class="form-control bs-form-control-inline" flex name="losses" min="0" step="0.01" ng-model="newMaterial.losses">
+               </div>
+            </div>
+            <div class=" col-sm-9 low-side-padding">
+               <div class="col-xs-2 col-sm-3 low-side-padding">
+                  <label for="ppt" style="font-size:1em">Price/Tonne</label>
+               </div>
+               <div class="col-xs-10 col-sm-9 low-side-padding">
+                  <input type="number" class="form-control bs-form-control-inline" flex name="ppt" required min="0" step="0.01" ng-model="newMaterial.price_per_tonne">
+               </div>
+            </div>
+
+            <md-button class="md-raised md-primary" type="submit" style="max-height:20px" flex>Add</md-button>
+
+
+
+         </form>
+
+      </div>
+
+      <div class="panel-body ">
+         <table class="table table-striped" style="overflow-y:scroll;max-height:60vh;">
+            <thead>
+               <th colspan="4" class="col-sm-5"><a class="clickable">Material</a></th>
+               <th colspan="2" class="col-sm-2"><a class="clickable">Losses(%)</a></th>
+               <th colspan="2" class="col-sm-3"><a class="clickable">Price/Tonne</a></th>
+
+            </thead>
+
+            <tbody>
+               <tr ng-repeat="material in mtc.materials | filter:queryMaterial track by $index ">
+
+                  <td colspan="4" class="col-sm-4">
+                     <p>{{material.name}}</p>
+
+                  </td>
+                  <td colspan="2" class="col-sm-1">
+                     <p ng-hide="mtc.editing[$index]">{{material.losses}} %</p>
+                     <input type="text" class="form-control" ng-model="material.losses" ng-show="mtc.editing[$index]">
+                  </td>
+                  <td colspan="2" class="col-sm-6">
+                     <form name="form{{$index}}" class="form-inline" ng-submit="mtc.save($index)">
+                        <div class="form-group col-xs-6">
+                           <p ng-hide="mtc.editing[$index]">${{material.price_per_tonne}}</p>
+                           <input type="number" step="0.01" required class="form-control" ng-model="material.price_per_tonne" ng-show="mtc.editing[$index]"></input>
+                        </div>
+
+                        <div class="form-group col-xs-6" layout="row" layout-align="center start">
+                           <md-button class="md-fab md-raised md-mini md-primary" type="button" ng-hide="mtc.editing[$index]" ng-click=" mtc.editing[$index] = true" aria-label="Edit">
+                              <i class="fa fa-edit"></i>
+                           </md-button>
+                           <md-button class="md-fab md-raised md-mini md-primary" type="submit" ng-show="mtc.editing[$index]" aria-label="Save">
+                              <i class="fa fa-save"></i>
+                           </md-button>
+                           <md-button class="md-fab md-raised md-mini md-warn" type="button" ng-click="mtc.delete($index)" aria-label="Remove">
+                              <i class="fa fa-remove"></i>
+                           </md-button>
+                        </div>
+                     </form>
+                  </td>
+
+
+
+               </tr>
+            </tbody>
+
+         </table>
+
+      </div>
+   </div>
+
+</md-content>

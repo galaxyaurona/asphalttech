@@ -1,0 +1,19 @@
+<md-content layout="row">
+  <md-content layout="column" flex>
+    Deployment from new container
+    <md-input-container>
+      <label>Text to generate pdf</label>
+      <textarea ng-model="mc.randomText" class="md-raised" columns="1" rows="10"></textarea>
+    </md-input-container>
+    <md-button class="md-accent md-raised" ng-click="mc.generatePdf()">Generate pdf</md-button>
+    <md-button class="md-primary md-hue-1 md-raised" ng-click="mc.getPdf()">Get pdf</md-button>
+    <md-button class="md-primary md-raised" ng-click="mc.getCSV()">Get CSV</md-button>
+  </md-content>
+  <md-content layout="column" flex>
+    <md-button class="md-accent md-raised" ng-click="mc.get_today_callups()">Get today</md-button>
+    <md-button class="md-primary md-hue-1 md-raised" ng-click="mc.get_tomorrow_callups()">Get tomorrow</md-button>
+    <md-button class="md-primary md-raised" ng-click="mc.get_this_week_callups()">Get this week</md-button>
+    <md-button class="md-primary md-raised" ng-click="mc.get_this_month_callups()">Get this month</md-button>
+  </md-content>
+
+</md-content>

@@ -1,0 +1,68 @@
+<md-content>
+   <div class="panel {{panelClass || 'panel-primary'}} md-whiteframe-9dp">
+      <div class="panel-heading">
+         <h2>Cartage rate</h2>
+
+         <h4>Add new cartage</h4>
+         <form name="addRateForm" class="bs-form-inline" ng-submit="crc.add(newRate)">
+            <div class="form-group col-sm-5">
+               <div class="col-xs-2">
+                  <label for="newKm" style="font-size:1.3em">Km</label>
+               </div>
+               <div class="col-xs-10">
+                  <input type="number" class="form-control bs-form-control-inline" name="newKm" required min="0" ng-model="newRate.km">
+               </div>
+            </div>
+            <div class="form-group col-sm-5">
+               <div class="col-xs-2">
+                  <label for="newRate" style="font-size:1.3em">Rate</label>
+               </div>
+               <div class="col-xs-10">
+                  <input type="number" class="form-control bs-form-control-inline" flex name="newRate" required min="0" step="any" ng-model="newRate.rate">
+               </div>
+            </div>
+
+            <md-button class="md-raised md-primary" type="submit" style="max-height:20px" flex>Add</md-button>
+
+         </form>
+      </div>
+
+      <div class="panel-body" style="max-height:60vh;overflow-y:auto">
+         <md-list-item layout-gt-sm="row">
+
+            <div class="md-list-item-text" layout="row" flex="100" style="padding:5px">
+               <div class="form-group col-xs-4 text-center">
+                  <p style="font-size:1.5em"><strong>Km</strong></p>
+               </div>
+               <div class="form-group col-xs-4 text-center">
+                  <p style="font-size:1.5em"><strong>Rate</strong></p>
+               </div>
+
+            </div>
+
+
+         </md-list-item>
+         <md-list-item ng-repeat="rate in crc.cartageRates track by $index" layout-gt-sm="row">
+            <form ng-submit="crc.save($index)" name="km{{$index}}" flex="100">
+               <div class="md-list-item-text" layout="row" flex="100" style="padding:5px">
+                  <div class="form-group col-xs-4">
+                     <p style="font-size:1.2em"> <strong>{{rate.km}}</strong></p>
+
+                  </div>
+                  <div class="form-group col-xs-4">
+                     <p style="font-size:1.2em" ng-hide="crc.editing[$index]"> ${{rate.rate}}</p>
+                     <input type="number" ng-show="crc.editing[$index]" class="form-control bs-form-control-inline" flex name="rate" required min="0" step="any" ng-model="rate.rate">
+                  </div>
+                  <div class="form-group col-xs-4">
+                     <md-button class="md-raised md-primary" ng-hide="crc.editing[$index]" type="button" style="max-height:20px" ng-click="crc.editing[$index] = true" style="top:0px" flex>Edit</md-button>
+                     <md-button class="md-raised md-primary" ng-show="crc.editing[$index]" type="submit" style="max-height:20px" style="top:0px" flex>Save</md-button>
+                     <md-button class="md-raised md-warn" type="button" style="max-height:20px" ng-click="crc.delete($index)" style="top:0px" flex>Delete</md-button>
+                  </div>
+
+               </div>
+               <md-divider ng-if="!$last" style="padding-bottom:5px"></md-divider>
+            </form>
+         </md-list-item>
+      </div>
+   </div>
+</md-content>

@@ -1,0 +1,44 @@
+<md-content layout-gt-xs="row" layout="column">
+   <md-content layout="column" style="padding-right:10px">
+      <md-toolbar class="md-primary border-right" style="min-width:200px">
+         <p class="md-toolbar-tools" class="page-toolbar-text">Period
+         </p>
+      </md-toolbar>
+
+      <md-list>
+         <md-list-item layout-fill ng-repeat="period in curc.periods" st>
+
+            <md-button ng-class="{'md-accent md-hue-2': period == curc.selectedPeriod}" style="width:100%;text-align:left;margin:0px;min-height:55px" ng-click="curc.changePeriod(period) ">
+               {{period.label}}
+
+            </md-button>
+           <md-divider ng-hide="$last" style=""></md-divider>
+
+         </md-list-item>
+
+      </md-list>
+   </md-content>
+   <md-content layout="column" flex>
+      <md-toolbar class="md-primary border-right" style="min-width:200px">
+         <p class="md-toolbar-tools" class="page-toolbar-text">{{curc.selectedPeriod.label}} Due item(s)
+         </p>
+      </md-toolbar>
+      <h3 ng-show="curc.selectedPeriod == undefined">Period has not been selected</h3>
+      <md-list>
+         <md-list-item class="md-3-line" ng-repeat="callup in curc.dueCallups">
+           
+            <div class="md-list-item-text" layout="column">
+               <h3>{{ callup.name  }}</h3>
+               <h4 ng-show="curc.selectedPeriod.value == 'today'">{{ callup.last_triggered_date | date : 'dd/MM/yyyy' || 'Never' }}</h4>
+               <h4 ng-hide="curc.selectedPeriod.value == 'today'">{{ callup.next_due_date | date : 'dd/MM/yyyy' || 'Never' }}</h4>
+               <p>{{ callup.note }}</p>
+            </div>
+            <md-divider ng-hide="$last && curc.dueCallups.length>1" style=""></md-divider>
+         </md-list-item>
+
+      </md-list>
+   </md-content>
+
+
+
+</md-content>

@@ -1,0 +1,204 @@
+<md-subheader style="margin-bottom:10px" flex="initial" class="md-no-sticky">
+    <h3>Generating invoice</h3>
+    <small> Select all the attribute then click generate to see the pdf</small>
+    <md-button ng-click="gic.showJob = !gic.showJob" class="md-accent "> Toggle</md-button>
+</md-subheader>
+<md-input-container class="md-block" flex-gt-xs="50">
+    <label>Job Type {{'Type '+gic.job_type}}</label>
+    <md-select flex name="jobType" ng-model="gic.job_type" ng-change="gic.job_type_changed()">
+        <md-option></md-option>
+        <md-option ng-value="type.data" ng-repeat="type in gic.job_types">{{type.name}}</md-option>
+    </md-select>
+</md-input-container>
+<h4>Add new column</h4>
+<br>
+<md-content layout="column" layout-gt-xs="row">
+
+    <md-input-container class="md-block" flex-gt-xs="30">
+        <label>Column name</label>
+        <input ng-model="gic.new_column.name" name="new_column_name">
+
+        <div ng-messages="newInvoiceForm.new_column_name.$error" role="alert" multiple ng-if="gic.column_name_empty">
+            <div>Column name is required</div>
+        </div>
+        <div ng-messages="newInvoiceForm.new_column_name.$error" role="alert" ng-if="gic.columns_exist">
+            <div>This column already exist</div>
+        </div>
+    </md-input-container>
+    <md-input-container class="md-block" flex-gt-xs="10">
+        <md-checkbox ng-model="gic.new_column.add_to_total" aria-label="add_to_total">
+            Add to total
+        </md-checkbox>
+    </md-input-container>
+    <md-button class="md-primary md-fab md-icon" ng-click="gic.addNewColumn()">
+        <i class='fa fa-plus fa-lg'></i>
+    </md-button>
+</md-content>
+<pre ng-show="gic.showJob">{{gic.beautifiedJob}}</pre>
+<form style="padding:10px" ng-submit="gic.generateInvoice(newInvoiceForm)" name="newInvoiceForm" novalidate class="md-whiteframe-3dp">
+    <md-content layout-fill layout="column" layout-gt-xs="column">
+        <md-content layout="column" layout-gt-xs="row" flex-gt-xs="70">
+            <md-content layout="column" layout-gt-xs="row" flex-gt-xs="70">
+                <md-input-container class="md-block" flex-gt-xs="20">
+                    <label>Attention</label>
+                    <md-select flex name="attention" ng-model="gic.newInvoice.attention" required>
+                        <md-option></md-option>
+                        <md-option ng-value="person.name" ng-repeat="person in gic.client.contact_people">{{person.name}}</md-option>
+                    </md-select>
+                    <div class="md-custom-warn" ng-messages="newInvoiceForm.attention.$error" ng-if="newInvoiceForm.attention.$dirty || newInvoiceForm.$submitted">
+                        <div ng-message="required">Order type is required</div>
+                    </div>
+                </md-input-container>
+                <md-content layout="column" flex-gt-xs="20">
+                    <md-content layout-gt-xs="row" layout="column">
+                        <label>Date generate</label>
+                        <md-datepicker flex style="margin-right:0px;padding-right:0px" required name="date_generate" ng-model="gic.newInvoice.date_generate" md-placeholder="Enter date generate">
+                        </md-datepicker>
+                    </md-content>
+
+                    <div flex="100" ng-messages="newInvoiceForm.date_generate.$error" role="alert" ng-if="newInvoiceForm.date_generate.$dirty || newInvoiceForm.$submitted">
+                        <div ng-message="required" class="md-custom-warn">Next due date cannot be empty.</div>
+                        <div ng-message="valid" class="md-custom-warn">Invalid date format.</div>
+                    </div>
+                </md-content>
+            </md-content>
+            <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-file-pdf-o  fa-lg'></i></md-button>
+        </md-content>
+        <md-divider style="padding-bottom:5px"></md-divider>
+        <md-content layout-fill>
+            <md-content layout-gt-xs="row" layout="column">
+                <h3 flex-gt-xs="50">Items</h3>
+                <md-button class="md-accent md-raised" ng-click="gic.addHeader($event)">
+                    Add Header
+                </md-button>
+
+            </md-content>
+
+
+
+            <table class="table table-bordered table-responsive" style="min-width:1200px">
+                <thead>
+
+                    <th class="tight-cell" style="width:200px">Date</th>
+                    <th class="tight-cell" ng-show="gic.job_type==1">Docket Number</th>
+                    <th class="tight-cell" style="min-width:150px" ng-show="gic.job_type==1">Address</th>
+                    <th class="tight-cell" style="min-width:100px" ng-show="gic.job_type==1">Suburb</th>
+                    <th class="tight-cell" ng-show="gic.job_type==1">Waiting time (min)</th>
+                    <th class="tight-cell" ng-show="gic.job_type==1" style="width:70px;padding:2px"><span class="md-custom-warn">Km</span></th>
+                    <th class="tight-cell" ng-show="gic.job_type!=1">Description</th>
+                    <th class="tight-cell" ng-repeat="column in gic.columns"><strong> <span ng-class="{'md-custom-warn':column.add_to_total}">{{column.name}}</span> </strong>
+                        <a class="pull-right" ng-click="gic.columns.splice($index,1)">
+                            <i class='fa fa-remove'></i>
+                        </a>
+                    </th>
+                    <th class="tight-cell small-cell">Unit</th>
+                    <th class="tight-cell small-cell"><span class="md-custom-warn">Qty</span></th>
+                    <th class="tight-cell small-cell"><span class="md-custom-warn">Rate</span></th>
+                    <th class="tight-cell" ng-show="gic.job_type==1"><span class="md-custom-warn"> Cartage </span></th>
+                    <th class="tight-cell" style="min-width:100px"> <span class="md-custom-warn">TOTAL </span></th>
+                    <th class="tight-cell" style="width:50px">Remove</th>
+
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in gic.newInvoice.items ">
+
+                        <td colspan="{{gic.colspan + gic.columns.length}}" ng-if="item.type=='header' || item.type=='mix'">
+                            <strong>
+                                <input type="text" class="form-control narrow-input" style="display:inline;width:70%" name="item{{index}}name" ng-model="item.name">
+                            </strong>
+                            <md-button class="md-primary md-icon" ng-click="gic.addNewItem($index,$event)">
+                                <i class='fa fa-plus fa-lg'></i>
+                            </md-button>
+                        </td>
+                        <td colspan="{{gic.colspan + gic.columns.length}}" ng-if="item.type == 'attachment'">
+                            <textarea name="" id="" ng-model="item.name" class="form-control narrow-input" cols="30" rows="3"></textarea>
+                        </td>
+
+
+                        <td style="max-width:180px;padding:1px" ng-if="item.type=='item'">
+                            <md-datepicker flex style="margin-right:0px;padding-right:0px" name="item{{$index}}_date" ng-model="item.item_date" md-placeholder="Item date">
+                            </md-datepicker>
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type == 1">
+                            <input type="text" class="form-control narrow-input" ng-model="item.docket_no">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type == 1">
+                            <input type="text" class="form-control narrow-input" ng-model="item.street">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type == 1">
+                            <input type="text" class="form-control narrow-input" ng-model="item.suburb">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type == 1">
+                            <input type="number" class="form-control narrow-input" ng-model="item.waiting_time" ng-change="gic.recalculateWaitingTime()">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type == 1" style="width:80px;padding:2px">
+                            <input type="number" min="0" class="form-control narrow-input" ng-model="item.km" ng-change="gic.calculateCartage(item,'km')">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type != 1">
+                            <input type="text" class="form-control narrow-input" ng-model="item.description">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item'" ng-repeat="column in gic.columns" style="padding:2px">
+                            <input type="text" ng-hide="column.add_to_total" class="form-control narrow-input" ng-model="item[column.name]">
+                            <span ng-show="column.add_to_total"> $ </span><input type="number" ng-show="column.add_to_total" class="form-control narrow-input" ng-model="item[column.name]" ng-change="gic.addingToTotal(item,column)">
+                        </td>
+                        <td class="tight-cell  small-cell" ng-if="item.type=='item'">
+                            <input type="text" class="form-control narrow-input" ng-model="item.unit">
+                        </td>
+                        <td class="tight-cell  small-cell" ng-if="item.type=='item'">
+                            <input type="number" min="0" class="form-control narrow-input" ng-model="item.qty" ng-change="gic.calculateTotal(item)">
+                        </td>
+                        <td class="tight-cell  small-cell" ng-if="item.type=='item'">
+                            <input type="number" min="0" class="form-control narrow-input" ng-model="item.rate" ng-change="gic.calculateTotal(item)">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item' && gic.job_type==1">$
+                            <input type="number" ng-class="{'md-custom-warn': (item.cartage == 0)}" class="form-control narrow-input" style="display:inline;width:80%" ng-model="item.cartage" ng-change="gic.calculateCartage(item,'cartage')">
+                        </td>
+                        <td class="tight-cell" ng-if="item.type=='item'"> <strong>${{item.total | number: 2}} </strong></td>
+                        <td class="tight-cell" style="width:50px" colspan="1" ng-hide="item.type =='attachment'">
+                            <md-button type="button" ng-if="item.type == 'item'" style="margin:1px" ng-click="gic.removeItem($index,item)" class="md-warn md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                            <md-button type="button" ng-if="item.type == 'header' || item.type == 'mix'  " style="margin:1px" ng-click="gic.removeHeader($index)" class="md-accent md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                        </td>
+
+
+                    </tr>
+                    <tr ng-show="gic.job_type == '1'">
+                        <td colpan="1">N/A</td>
+                        <td colspan="3">Total waiting time</td>
+
+                        <td colspan="1">{{gic.newInvoice.total_waiting_time | number: 2}}</td>
+                        <td class="tight-cell" ng-repeat="column in gic.columns" style="padding:2px">
+                            N/A
+                        </td>
+                        <td colpan="1">N/A</td>
+                        <td colpan="1">hr</td>
+                        <td colpan="1">N/A</td>
+                        <td colpan="1" class="tight-cell">
+                            <input type="number" name="" class="form-control" ng-model="gic.newInvoice.waiting_time_rate" ng-change="gic.recalculateSubtotalOnWaitingTimeRate()">
+                        </td>
+                        <td colpan="1">N/A</td>
+                        <td colpan="1" ng-class="{'md-custom-warn': gic.newInvoice.total_waiting_time == undefined || gic.newInvoice.waiting_time_rate == undefined }">
+                            <span ng-show="gic.newInvoice.total_waiting_time == undefined || gic.newInvoice.waiting_time_rate == undefined"> Undefined</span>
+                            <span ng-hide="gic.newInvoice.total_waiting_time == undefined || gic.newInvoice.waiting_time_rate == undefined">  $ {{gic.newInvoice.total_waiting_time * gic.newInvoice.waiting_time_rate | number: 2}}</span>
+
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="{{gic.colspan + gic.columns.length-1}}"> <strong>Subtotal</strong> </td>
+                        <td> <strong> $ {{gic.newInvoice.subtotal | number : 2}}</strong> </td>
+                    </tr>
+                    <tr>
+                        <td colspan="{{gic.colspan + gic.columns.length-1}}"> <strong>GST (10%) </strong> </td>
+                        <td> <strong> $ {{gic.newInvoice.gst | number : 2}}</strong> </td>
+                    </tr>
+                    <tr>
+                        <td colspan="{{gic.colspan + gic.columns.length-1}}"> <strong>Total</strong> </td>
+                        <td> <strong> $ {{gic.newInvoice.total | number : 2}}</strong> </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </md-content>
+    </md-content>
+</form>

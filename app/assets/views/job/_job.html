@@ -1,0 +1,48 @@
+<md-content class="md-inline-form">
+      <md-subheader class="md-no-sticky"><h3>Jobs</h3></md-subheader>
+      <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="selectedTab">
+         <md-tab label="View"><!-- Viewing existing job records -->
+            <md-content class="md-padding">
+               <md-list>
+                  <md-list-item layout-gt-sm="row">
+                     <div class="col-xs-1"><div style="margin-bottom:20px"><a ng-click="" >Name</a></div></div>
+                     <div class="col-xs-2">
+                        <md-input-container style="margin:0px">
+                           <label>Search Name</label>
+                           <input name="searchName" ng-model="jobQuery.name">
+                        </md-input-container>
+                     </div>
+                     <div class="col-xs-1"><div style="margin-bottom:20px"><a ng-click="" >Client</a></div></div>
+                     <div class="col-xs-2">
+                        <md-input-container style="margin:0px">
+                           <label>Search Client Name</label>
+                           <input name="searchName" ng-model="jobQuery.client_name">
+                        </md-input-container>
+                     </div>
+                     <div class="col-xs-1"><div style="margin-bottom:20px"><a ng-click="" >Date</a></div></div>
+                  </md-list-item>
+                  <md-list-item layout-gt-sm="row" ng-repeat="job in jc.jobs | filter:jobQuery">
+                     <div class="col-xs-3">
+                        <a ng-click="selectJob(job.id)" class="clickable">{{job.name}}</a>
+                     </div>
+                     <div class="col-xs-3">
+                        {{job.client_name}}
+                     </div>
+                     <div class="col-xs-3">
+                        {{job.job_date | date:'dd/MM/yyyy'}}
+                     </div>
+                  </md-list-item>
+               </md-list>
+            </md-content>
+         </md-tab>
+         <md-tab label="New"><!-- New job -->
+            <div ng-include="'job/_job_tab_new.html'" style="display:flex" layout-fill></div>
+         </md-tab>
+         
+         <!--Selected job edit page-->
+         <md-tab label="Selected" ng-disabled="!jc.selected.name">
+            <div ng-include="'job/_job_tab_view.html'"></div>
+         </md-tab>
+      </md-tabs>
+</md-content>
+</div>

@@ -1,0 +1,206 @@
+<md-button ng-click="mixc.openList()" class="md-fab md-primary" hide-gt-xs ng-hide="mixc.editMode">
+   <i class="fa fa-list"></i>
+</md-button>
+
+<div flex-gt-xs="30" class="" ng-hide="mixc.editMode">
+   <md-sidenav style="width:100%" class="md-whiteframe-6dp md-sidenav-left md-whiteframe-z3" md-component-id="mixesList" md-is-locked-open="$mdMedia('gt-xs')">
+      <md-toolbar class="md-primary border-right">
+         <p class="md-toolbar-tools" class="page-toolbar-text">Mixes
+            <md-button class="md-accent close-button-right toolbar-font " hide-gt-xs ng-click="mixc.closeList()">
+               <i class="fa fa-close "></i>
+            </md-button>
+         </p>
+         <md-input-container style="margin:10px" class="no-errors md-accent md-block" flex-gt-sm>
+            <label class="md-accent" style="color:#311B92">Search</label>
+            <input ng-model="mixesQuery" style="color:#311B92">
+         </md-input-container>
+      </md-toolbar>
+      <md-content>
+         <md-list>
+            <md-list-item layout-fill ng-repeat="mix in mixc.mixes | filter:mixesQuery track by $index">
+
+               <md-button ng-class="{'md-accent md-hue-2': mix == mixc.selectedMix}" style="width:100%;text-align:left;margin:0px;min-height:55px" ng-click="mixc.changeMixDisplay(mix)">
+                  {{mix.name}}
+
+               </md-button>
+               <md-divider ng-hide="$last && mixc.mixes.length>1" style=""></md-divider>
+
+            </md-list-item>
+
+         </md-list>
+
+      </md-content>
+
+   </md-sidenav>
+</div>
+
+<div flex class="md-whiteframe-6dp" style="margin-left:10px;">
+   <md-toolbar class="md-primary border-right">
+      <p class="md-toolbar-tools" class="page-toolbar-text">{{mixc.selectedMix.name || 'Mix'}} content
+      </p>
+
+   </md-toolbar>
+   <md-content layout-fill style="overflow:visible;height:22px">
+      <md-button style="position:absolute;top:-25px;right:5px" class="md-fab md-mini md-warn pull-right" ng-show="mixc.selectedMix != undefined" type="button" ng-click="mixc.delete(mixc.selectedMix)" aria-label="Remove">
+         <i class="fa fa-remove fa-lg"></i>
+      </md-button>
+      <md-button style="position:absolute;top:-25px;right:60px" class="md-fab md-mini md-accent pull-right" type="button" ng-show="mixc.selectedMix != undefined && !mixc.editMode " ng-click="mixc.startEdit()" aria-label="Remove">
+         <i class="fa fa-edit fa-lg"></i>
+      </md-button>
+      <md-button style="position:absolute;top:-25px;right:60px" class="md-fab md-mini md-accent pull-right" type="button" ng-show="mixc.selectedMix != undefined && mixc.editMode " ng-click="mixc.cancelEdit()" aria-label="Remove">
+         <i class="fa fa-reply fa-lg"></i>
+      </md-button>
+      <md-button style="position:absolute;top:-25px;right:115px" class="md-fab md-mini md-accent pull-right" type="button" ng-show="mixc.selectedMix != undefined && mixc.editMode " ng-click="mixc.saveAs()" aria-label="Remove">
+         <i class="fa fa-copy fa-lg"></i>
+      </md-button>
+   </md-content>
+   <md-content layout-fill>
+      <p ng-show="mixc.selectedMix.corrupted" class="md-custom-warn text-center"> <i class="fa fa-warning"></i> Warning! One or many material from this mix has been deleted!
+         <md-button class="md-accent" ng-click="mixc.uncorruptedMix()">It's ok now!</md-button>
+      </p>
+      <md-table-container ng-hide="mixc.selectedMix == undefined || mixc.editMode">
+         <table md-table>
+            <thead md-head md-order="query.order" md-on-reorder="logOrder">
+               <tr md-row>
+                  <th md-column md-order-by="name"><span><strong>Name</strong></span></th>
+
+                  <th md-column md-numeric md-order-by="aggregate"><span>Aggregate (%)</span></th>
+                  <th md-column md-numeric md-order-by="percent"><span>Percent (%)</span></th>
+                  <th md-column md-numeric md-order-by="cost"><span>Cost</span></th>
+
+               </tr>
+            </thead>
+            <tbody md-body>
+               <tr md-row md-select="material" ng-repeat="material in mixc.selectedMix.mix_materials | orderBy: query.order">
+                  <td md-cell><strong>{{material.name}}</strong></md-cell>
+
+                     <td md-cell>{{material.aggregate || 0 | number: 2}} %</td>
+                     <td md-cell>{{material.percent || 0 | number: 2}} %</td>
+                     <td md-cell>$ {{material.cost || 0 | number: 2}}</td>
+
+               </tr>
+            </tbody>
+            <tfoot md-foot>
+               <tr md-row>
+                  <td md-cell colspan="2" style="padding-bottom:8px">
+                     <h5><strong>Note:</strong></h5> {{mixc.selectedMix.note}}</td>
+                  <td md-cell><strong>Total: </strong></td>
+                  <td md-cell>${{mixc.selectedMix.price_per_tonne | number: 2}}</td>
+               </tr>
+            </tfoot>
+         </table>
+
+      </md-table-container>
+      <h4 ng-show="mixc.selectedMix == undefined" class="text-center">There is no selected item</h4>
+
+
+      <form style="padding:10px" ng-show="mixc.editMode" ng-submit="mixc.edit(editMixForm)" name="editMixForm" novalidate class="md-whiteframe-3dp">
+
+         <md-content layout-fill layout-gt-xs="row" layout="column">
+            <md-input-container class="md-block" style="flex:1 1 1%" >
+               <label>Name</label>
+               <input ng-model="mixc.editingMix.name" required name="name">
+               <div ng-messages="editMixForm.name.$error" role="alert" multiple>
+                  <div ng-message="required" class="my-message">Mix name cannot be empty.</div>
+               </div>
+            </md-input-container>
+            <md-input-container class="md-block" flex>
+               <label>Note</label>
+               <textarea ng-model="mixc.editingMix.note" class="md-raised" columns="1" rows="3"></textarea>
+            </md-input-container>
+
+            <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-save fa-lg'></i></md-button>
+         </md-content>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-content layout="column">
+
+            <ng-form class="" layout-gt-xs="row" layout="column" name="editComponentForm" novalidate>
+               <md-input-container flex-gt-xs="40" flex class="md-block">
+                  <label>Material</label>
+                  <md-select flex name="newComponentMaterial" ng-model="mixc.newEditingComponent.material" required>
+                     <md-option></md-option>
+                     <md-option ng-value="material" ng-repeat="material in mixc.editingMaterials">{{material.name}}</md-option>
+                  </md-select>
+                  <div class="errors" ng-messages="editComponentForm.newComponentMaterial.$error" ng-if="editComponentForm.newComponentMaterial.$dirty || editComponentForm.$submitted">
+                     <div ng-message="required">Required</div>
+                  </div>
+               </md-input-container>
+               <md-input-container flex-gt-xs="30" flex class="md-block" ng-if="mixc.aggregateEditing">
+                  <label>Aggregate (%)</label>
+                  <input ng-keypress="mixc.addNewEditingComponentIfEnter($event,editComponentForm)" ng-model="mixc.newEditingComponent.aggregate" type="number" ng-required="mixc.aggregateEditing" name="newComponentAggregate">
+                  <div class="errors" ng-messages="editComponentForm.newComponentAggregate.$error" ng-if="editComponentForm.newComponentAggregate.$dirty || editComponentForm.$submitted">
+                     <div ng-message="required">Required</div>
+                  </div>
+               </md-input-container>
+
+               <md-input-container flex-gt-xs="30" flex class="md-block" ng-if="!mixc.aggregateEditing">
+                  <label>Percent (%)</label>
+                  <input ng-keypress="mixc.addNewEditingComponentIfEnter($event,editComponentForm)" ng-model="mixc.newEditingComponent.percent" type="number" ng-required="!mixc.aggregateEditing" name="newComponentPercent">
+                  <div class="errors" ng-messages="editComponentForm.newComponentPercent.$error" ng-if="editComponentForm.newComponentPercent.$dirty || editComponentForm.$submitted">
+                     <div ng-message="required">Required</div>
+                  </div>
+               </md-input-container>
+
+               <md-input-container layout-gt-xs="row" layout="column" flex-gt-xs="30" flex>
+
+                  <md-switch flex ng-model="mixc.aggregateEditing">{{mixc.aggregateEditing ? "Aggregate" : "Percent"}}</md-switch>
+                  <md-button type="button" ng-click="mixc.addEditingComponent(editComponentForm)" class="md-primary md-fab md-icon"><i class='fa fa-plus fa-lg'></i></md-button>
+               </md-input-container>
+
+
+
+            </ng-form>
+
+         </md-content>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-content layout-fill>
+            <md-table-container>
+               <table md-table>
+                  <thead md-head md-order="query.order" md-on-reorder="logOrder">
+                     <tr md-row>
+                        <th md-column md-order-by="name"><span><strong>Name</strong></span></th>
+
+                        <th md-column md-numeric md-order-by="aggregate"><span>Aggregate (%)</span></th>
+                        <th md-column md-numeric md-order-by="percent"><span>Percent (%)</span></th>
+                        <th md-column md-numeric md-order-by="cost"><span>Cost</span></th>
+                        <th md-column md-numeric><span>Remove</span></th>
+                     </tr>
+                  </thead>
+                  <tbody md-body>
+                     <tr md-row md-select="material" ng-repeat="material in mixc.editingMix.mix_materials | orderBy: query.order">
+                        <td md-cell><strong>{{material.name}}</strong></md-cell>
+
+
+                           <td md-cell> <input type="number" class="form-control" ng-if="material.aggregate != undefined" ng-model="material.aggregate" ng-blur="mixc.recalculateEditingCost()"></td>
+                           <td md-cell> <input type="number" class="form-control" ng-if="material.aggregate == undefined" ng-model="material.percent" ng-blur="mixc.recalculateEditingCost()"> <span ng-if="material.aggregate != undefined">{{material.percent | number:2}} %</span></td>
+                           <td md-cell>$ {{material.cost | number: 2}}</td>
+                           <td md-cell>
+                              <md-button type="button" ng-click="mixc.removeEditingComponent(material)" class="md-warn md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                           </td>
+
+
+                     </tr>
+                  </tbody>
+                  <tfoot md-foot>
+                     <tr md-row>
+                        <td md-cell style="padding-bottom:8px;font-size:1.2em"><strong>Total</strong></td>
+                        <td md-cell ng-class="{'md-custom-warn':mixc.totalEditingAgg>100}">{{mixc.totalEditingAgg}}</td>
+                        <td md-cell ng-class="{'md-custom-warn':mixc.totalEditingPercent>100}">{{mixc.totalEditingPercent}}</td>
+                        <td md-cell>${{mixc.editingMix.price_per_tonne | number: 2 }}</td>
+                        <td md-cell></td>
+                     </tr>
+                  </tfoot>
+               </table>
+
+            </md-table-container>
+
+
+      </form>
+
+
+
+
+      </md-content>
+
+
+</div>

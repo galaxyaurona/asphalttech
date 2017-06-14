@@ -1,0 +1,139 @@
+<md-button ng-click="curc.openList()" class="md-fab md-primary" hide-gt-xs ng-hide="curc.editMode">
+   <i class="fa fa-list"></i>
+</md-button>
+
+<div flex-gt-xs="30" class="" ng-hide="curc.editMode">
+   <md-sidenav style="width:100%" class="md-whiteframe-6dp md-sidenav-left md-whiteframe-z3" md-component-id="callupList" md-is-locked-open="$mdMedia('gt-xs')">
+      <md-toolbar class="md-primary border-right">
+         <p class="md-toolbar-tools" class="page-toolbar-text">Items
+            <md-button class="md-accent close-button-right toolbar-font " hide-gt-xs ng-click="curc.closeList()">
+               <i class="fa fa-close "></i>
+            </md-button>
+         </p>
+         <md-input-container style="margin:10px" class="no-errors md-accent md-block" flex-gt-sm>
+            <label class="md-accent" style="color:#311B92;font-size:0.7em">Search('type':'name' or 'name')</label>
+            <input ng-model="curc.searchString" style="color:#311B92" ng-change="curc.breakDownSearchString()">
+         </md-input-container>
+      </md-toolbar>
+      <md-content>
+         <md-list>
+            <md-list-item layout-fill ng-repeat="callup in curc.callups | filter: curc.callupsQuery track by $index">
+
+               <md-button ng-class="{'md-accent md-hue-2': callup == curc.selectedCallup}" style="width:100%;text-align:left;margin:0px;min-height:55px" ng-click="curc.selectedCallup = callup">
+                  <span ng-show="callup.category">{{callup.category}}: </span>{{callup.name}}
+
+               </md-button>
+               <md-divider ng-hide="$last && curc.callups.length>1" style=""></md-divider>
+
+            </md-list-item>
+
+         </md-list>
+
+      </md-content>
+
+   </md-sidenav>
+</div>
+
+<div flex class="md-whiteframe-6dp" style="margin-left:10px;">
+   <md-toolbar class="md-primary border-right">
+      <p class="md-toolbar-tools" class="page-toolbar-text">{{curc.selectedCallup.name || 'Call up'}} content
+      </p>
+
+   </md-toolbar>
+   <md-content layout-fill style="overflow:visible;height:22px">
+      <md-button style="position:absolute;top:-25px;right:5px" class="md-fab md-mini md-warn pull-right" ng-show="curc.selectedCallup != undefined" type="button" ng-click="curc.delete(curc.selectedCallup)" aria-label="Remove">
+         <i class="fa fa-remove fa-lg"></i>
+      </md-button>
+      <md-button style="position:absolute;top:-25px;right:60px" class="md-fab md-mini md-accent pull-right" type="button" ng-show="curc.selectedCallup != undefined && !curc.editMode " ng-click="curc.startEdit()" aria-label="Remove">
+         <i class="fa fa-edit fa-lg"></i>
+      </md-button>
+      <md-button style="position:absolute;top:-25px;right:60px" class="md-fab md-mini md-accent pull-right" type="button" ng-show="curc.selectedCallup != undefined && curc.editMode " ng-click="curc.cancelEdit()" aria-label="Remove">
+         <i class="fa fa-reply fa-lg"></i>
+      </md-button>
+   </md-content>
+   <md-content layout-fill>
+
+
+      <h4 ng-show="curc.selectedCallup == undefined" class="text-center">There is no selected item</h4>
+      <md-list ng-show="curc.selectedCallup != undefined && !curc.editMode">
+         <md-list-item><strong>Name: </strong> {{curc.selectedCallup.name}}</md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Category: </strong> {{curc.selectedCallup.category}}</md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Last triggered date: </strong> {{curc.selectedCallup.last_triggered_date | date : 'dd/MM/yyyy'}} <span ng-show='curc.selectedCallup.last_triggered_date == undefined || curc.selectedCallup.last_triggered_date == null '>Never</span></md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Repeat amount: </strong> {{curc.selectedCallup.repeat_amount}}</md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Repeat unit: </strong> {{curc.selectedCallup.repeat_unit}}</md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Next due date: </strong> {{curc.selectedCallup.next_due_date | date : 'dd/MM/yyyy' || 'Never'}} <span ng-show='curc.selectedCallup.next_due_date == undefined || curc.selectedCallup.next_due_date == null '>Never</span></md-list-item>
+         <md-divider style="padding-bottom:5px"></md-divider>
+         <md-list-item><strong>Repeat amount: </strong> {{curc.selectedCallup.repeat_amount}}</md-list-item>
+         </md-list-item>
+         <md-list-item><strong>Note: </strong> {{curc.selectedCallup.note}}</md-list-item>
+         </md-list-item>
+      </md-list>
+
+      <form style="padding:10px" ng-show="curc.editMode" ng-submit="curc.edit(editCallupForm)" name="editCallupForm" novalidate class="md-whiteframe-3dp">
+
+
+         <md-content layout-fill layout="column" layout-gt-xs="row">
+            <md-content layout="column" flex-gt-xs="70">
+               <md-content layout="column" layout-gt-xs="row">
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Name</label>
+                     <input ng-model="curc.editingCallup.name" required name="name">
+                     <div ng-messages="editCallupForm.name.$error" role="alert" multiple>
+                        <div ng-message="required" class="my-message">Item name cannot be empty.</div>
+                     </div>
+                  </md-input-container>
+                  <md-input-container class="md-block" flex-gt-xs="30">
+                     <label>Category</label>
+                     <input ng-model="curc.editingCallup.category" name="Category">
+
+                  </md-input-container>
+               </md-content>
+               <md-content layout-gt-xs="row" layout="column">
+                  <md-content layout="column">
+                     <md-content layout-gt-xs="row" layout="column">
+                        <label>Next due date</label>
+                        <md-datepicker style="margin-right:0px;padding-right:0px" required name="nextDueDate" ng-model="curc.editingCallup.next_due_date" md-placeholder="Enter next due date">
+                        </md-datepicker>
+                     </md-content>
+
+                     <div flex="100" ng-messages="editCallupForm.nextDueDate.$error" role="alert">
+                        <div ng-message="required" class="md-custom-warn">Next due date cannot be empty.</div>
+                        <div ng-message="valid" class="md-custom-warn">Invalid date format.</div>
+                     </div>
+                  </md-content>
+
+                  <md-input-container style="margin-left:5px" class="md-block" flex-gt-xs>
+                     <label>Repeating interval</label>
+                     <input ng-model="curc.editingCallup.repeat_amount" type="number" step="1">
+                  </md-input-container>
+                  <md-input-container class="md-block" flex-gt-xs>
+                     <label>Repeating unit</label>
+                     <md-select ng-required="curc.editingCallup.repeat_amount != undefined && curc.editingCallup.repeat_amount != 0" name="unit" ng-model="curc.editingCallup.repeat_unit">
+                        <md-option ng-repeat="unit in curc.units" value="{{unit}}">
+                           {{unit}}(s)
+                        </md-option>
+                     </md-select>
+                     <div ng-show="editCallupForm.unit.$error.required" class="md-custom-warn">Repeating unit cannot be empty.</div>
+                  </md-input-container>
+               </md-content>
+               <md-input-container class="md-block" flex="100">
+                  <label>Note</label>
+                  <textarea ng-model="curc.editingCallup.note" class="md-raised" columns="1" rows="3"></textarea>
+               </md-input-container>
+            </md-content>
+            <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-save fa-lg'></i></md-button>
+         </md-content>
+      </form>
+
+
+
+
+   </md-content>
+
+
+</div>

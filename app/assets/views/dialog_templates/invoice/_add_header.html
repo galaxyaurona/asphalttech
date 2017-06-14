@@ -1,0 +1,45 @@
+<md-dialog style="width:80%" layout-padding>
+   <md-dialog-content>
+      <ng-form name="addNewContactPerson">
+         <h3 style="margin-top:0px">Add header/category </h3>
+         <md-content layout="column">
+            <md-input-container>
+               <label>Mix</label>
+               <md-select ng-model="ahdc.selectedMix" ng-change="ahdc.logMix()">
+                  <md-option ng-repeat="mix in ahdc.processedDockets" ng-value="mix">
+                     {{mix.name}}
+                  </md-option>
+               </md-select>
+               <div ng-show="ahdc.noMix" class="md-custom-warn">
+                  Please select a mix first {{ahdc.noMix}}
+               </div>
+            </md-input-container>
+            <md-list ng-cloak>
+               <md-subheader class="md-no-sticky">
+                  <strong >Docket associate with this mix</strong>
+                    <md-checkbox class="md-secondary pull-right" ng-model="ahdc.selectedMix.selectAll" ng-change="ahdc.changeSelectAll()"> <span ng-hide="ahdc.selectedMix.selectAll">Select all</span> <span ng-show="ahdc.selectedMix.selectAll">Deselect all</span></md-checkbox>
+               </md-subheader>
+               <md-list-item ng-repeat="docket in ahdc.selectedMix.list" style="width:100%">
+                  <p> Docket  <strong>{{ docket.docket_no}} </strong> by {{docket.employee_name}} </p>
+                  <md-checkbox class="md-secondary pull-right" ng-model="docket.selected"></md-checkbox>
+               </md-list-item>
+            </md-list>
+         </md-content>
+
+
+         <md-dialog-actions layout="row">
+            <md-button class="md-warn md-raised pull-left" type="button" ng-click="ahdc.cancel()">
+               Cancel
+            </md-button>
+            <span flex></span>
+            <md-button ng-click="ahdc.addingSimple()" type="button" class="pull-right md-accent md-raised" style="margin-right:10px;">
+               Add a simple header
+            </md-button>
+            <md-button ng-click="ahdc.addingFromSelection()" type="button" class="pull-right md-primary md-raised" style="margin-right:10px;">
+               Add from selection
+            </md-button>
+         </md-dialog-actions>
+      </ng-form>
+
+   </md-dialog-content>
+</md-dialog>

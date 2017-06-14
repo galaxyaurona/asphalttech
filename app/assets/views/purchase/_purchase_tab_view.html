@@ -1,0 +1,11 @@
+<md-content layout="column" layout-fill>
+   <h3>Order date</h3>
+   <md-content layout-gt-xs="row" layout-fill>
+      
+      <span>From date: <md-datepicker ng-model="pcc.fromDateQuery"></md-datepicker></span>
+      <span>To date: <md-datepicker ng-model="pcc.toDateQuery" ></md-datepicker></span>
+      <md-button class="md-primary md-fab md-icon" style="float:right !important" ng-click="pcc.inRange()"><i class="fa fa-search"></i></md-button>
+   </md-content>
+   <div id="grid1" ui-grid="pcc.gridOptions" class="grid" flex ng-if="pcc.purchases.length>0" flex></div>
+   <h3 ng-if="pcc.purchases.length==0"> There is no purchase to be shown</h3>
+</md-content>

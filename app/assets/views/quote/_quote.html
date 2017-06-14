@@ -1,0 +1,21 @@
+<md-content class="md-inline-form">
+    <md-subheader class="md-no-sticky">
+        <h3>Quotes</h3></md-subheader>
+    <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="selectedTab">
+        <md-tab label="View">
+            <!-- Viewing existing quote records -->
+            <div ng-include="'quote/_quote_tab_view.html'"></div>
+        </md-tab>
+
+        <md-tab label="New">
+            <!-- new quote creation -->
+            <div ng-include="'quote/_quote_tab_new.html'"></div>
+        </md-tab>
+
+
+        <!-- Selected quote -->
+        <md-tab label="Selected" ng-disabled="!qc.selected.quote.snapshot">
+            <div ng-include="'quote/_quote_tab_select.html'"></div>
+        </md-tab>
+    </md-tabs>
+</md-content>

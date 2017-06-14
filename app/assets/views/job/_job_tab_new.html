@@ -1,0 +1,85 @@
+<form name="newJobForm" ng-submit="saveJob()">
+    <div class="row">
+       <div class="col-md-6">
+          <h4>Job Details 
+             <md-button class="md-raised" type="submit">Save</md-button>
+             <md-button class="md-raised md-primary" ng-click="showImportQuote($event)" ng-hide="jc.newJob.quote">Import from Quote</md-button>
+             <md-button class="md-raised" ng-click="showImportQuote($event)" ng-show="jc.newJob.quote">Import from Quote</md-button>
+             </h4>
+              <md-list>
+                <div class="row col-md-12">
+
+                      <md-input-container class="md-block" style="margin-bottom:0px">
+                         <label>Name</label>
+                         <input name="newJobName" required="" md-maxlength="50" ng-model="jc.newJob.name">
+                         <div ng-messages="newJobForm.newJobName.$error">
+                            <div ng-message="required">Name is required.</div>
+                            <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                         </div>
+                      </md-input-container>
+                    </div>
+                    <div class="row col-md-12">
+                   <div style="padding-top:15px;padding-left:0px">
+                      <md-datepicker ng-model="jc.newJob.job_date" required="" md-placeholder="Enter Job Date" name="dateField"></md-datepicker>
+                     <div class="md-custom-warn" ng-messages="newJobForm.dateField.$error">
+                         <div ng-message="required">Date cannot be blank</div>
+                      </div>
+                   </div>
+                </div>
+                <div class="row">
+                   <div class="col-xs-8">
+                      <div ng-show="jc.newJob.client_id">
+                          <h5><md-button class="md-raised" ng-click="showPickClient($event)">Change Client</md-button> {{jc.newJob.client_name}}</h5>
+                      </div>
+                      <div ng-hide="jc.newJob.client_id">
+                         <h5><md-button class="md-raised md-primary" ng-click="showPickClient($event)">Select Client</md-button> No client selected!</h5>
+                      </div>
+                   </div>
+                   <div class="col-xs-4">
+                      <md-input-container class="md-block" flex-gt-xs="50">
+                        <label>Job Type</label>
+                        <md-select flex name="jobType" ng-model="jc.newJob.job_type" required>
+                           <md-option></md-option>
+                           <md-option ng-value="type.data" ng-repeat="type in job_types">{{type.name}}</md-option>
+                        </md-select>
+                        <div class="md-custom-warn" ng-messages="newJobForm.jobType.$error" ng-if="newJobForm.jobType.$dirty || newJobForm.jobType.$submitted">
+                           <div ng-message="required">Job type is required</div>
+                        </div>
+                     </md-input-container>
+                   </div>
+                </div>
+                <br>
+                <md-input-container class="md-block">
+                   <label>Notes</label>
+                   <textarea ng-model="jc.newJob.notes" columns="1" md-maxlength="200" rows="5"></textarea>
+                </md-input-container>
+             
+          </md-list>
+       </div>
+       <div class="col-md-6">
+          <div class="row col-md-12">
+             <div ng-show="jc.newJob.quote_id">
+                <h4>Quote Details</h4>
+                <h5>{{jc.newJob.quote.quote.name}} ~ {{jc.newJob.quote.quote.duration}} Days</h5>
+                <h6>Cost: ${{jc.newJob.quote.quote.cost | number:2}}, Charge: ${{jc.newJob.quote.quote.charge | number:2}}</h6>
+                <h6>Employees ~ Cost: ${{jc.newJob.quote.quote.snapshot.quote.costing.employee_cost | number:2}}, Charge: ${{jc.newJob.quote.quote.snapshot.quote.costing.employee_charge | number:2}}</h6>
+                <h6>Contractors ~ Cost: ${{jc.newJob.quote.quote.snapshot.quote.costing.contractor_cost | number:2}}, Charge: ${{jc.newJob.quote.quote.snapshot.quote.costing.contractor_charge | number:2}}</h6>
+                <h6>Mixes ~ Cost: ${{jc.newJob.quote.quote.snapshot.quote.costing.mix_cost | number:2}}, Charge: ${{jc.newJob.quote.quote.snapshot.quote.costing.mix_charge | number:2}}</h6>
+                <h6>Other ~ Cost: ${{jc.newJob.quote.quote.snapshot.quote.costing.other_cost | number:2}}, Charge: ${{jc.newJob.quote.quote.snapshot.quote.costing.other_charge | number:2}}</h6>
+             </div>
+             <div ng-hide="jc.newJob.quote_id">
+                <h4>Quote Details</h4>
+                <h5 style="color:red"> No quote attached!</h5>
+             </div>
+          </div>
+          <div class="row col-md-12">
+             <div>
+             <h4>Invoice Details <md-button class="md-raised md-primary" ng-click="generateInvoice()" ng-disabled="true">Generate Invoice</md-button></h4>
+          </div>
+          <div>
+             <h5>You must save job before creating an invoice!</h5>
+          </div>
+          </div>
+       </div>
+    </div>
+</form>

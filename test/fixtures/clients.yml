@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  postal_address: MyString
+  email: MyString
+  credit_limit: 9.99
+  payment_term: 1
+  type: 
+  note: MyString
+  credit_status: 9.99
+
+two:
+  name: MyString
+  postal_address: MyString
+  email: MyString
+  credit_limit: 9.99
+  payment_term: 1
+  type: 
+  note: MyString
+  credit_status: 9.99

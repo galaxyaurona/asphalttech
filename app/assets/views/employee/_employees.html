@@ -1,0 +1,305 @@
+<md-content class="md-inline-form">
+      <md-subheader class="md-no-sticky"><h3>Employees</h3></md-subheader>
+      <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="selectedTab">
+         <md-tab label="View"><!-- Viewing existing employee records -->
+            <md-content class="md-padding">
+               <md-list>
+                  <md-list-item layout-gt-sm="row">
+                  <div class="row" style="width:100%" ng-hide="ec.employees.length == 0">
+                     <div class="col-xs-1">
+                          <h5>Name</h5>
+                        </div>
+                        <div class="col-xs-3">
+                           <md-input-container style="margin:0px">
+                           <label>Search Name</label>
+                           <input name="searchName" ng-model="employeeQuery.given_names">
+                           </md-input-container>
+                        </div>
+                        <div class="col-xs-1">
+                           <h5> Contact</h5>
+                        </div>
+                        <div class="col-xs-3">
+                         <md-input-container style="margin:0px">
+                           <label>Search Contact</label>
+                           <input name="searchName" ng-model="employeeQuery.contact_no">
+                        </div>
+                        <div class="col-xs-2">
+ 
+                        </div>
+                     </div>
+                        
+                        </md-list-item>
+                        <md-list-item layout-gt-sm="row" ng-show="ec.employees.length == 0">
+                           <div  style="width:100%">No Employees Found!</div>
+                        </md-list-item>
+                  <md-list-item  ng-repeat="employee in ec.employees | filter:employeeQuery" layout-gt-sm="row">
+                     <div class="row" style="width:100%">
+                        <div class="col-xs-4">
+                           <a ng-click="selectEmployee(employee.id)" class="clickable"><h5>{{employee.given_names}} {{employee.last_name}}</h5></a>
+                        </div>
+                        <div class="col-xs-4">
+                           {{employee.contact_no}}
+                        </div>
+                        <div class="col-xs-4">
+ 
+                        </div>
+                     </div>
+                  </md-list-item>
+               </md-list>
+            </md-content>
+         </md-tab>
+         <md-tab label="New"><!-- New employee -->
+            <h4>Employee Details <button class="btn btn-default" ng-click="addNew()" ng-disabled="!newEmployee.givenName || !newEmployee.lastName || !newEmployee.contactNo">Save</button></h4>
+            <form name="newEmployeeForm">
+               <div class="row">
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                        <label>Given Name(s)</label>
+                        <input name="newEmployeeGivenName" required="" md-maxlength="60" ng-model="newEmployee.givenName">
+                        <div ng-messages="newEmployeeForm.newEmployeeGivenName.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 60 characters.</div>
+                        </div>
+                     </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                        <label>Last Name</label>
+                        <input name="newEmployeeLastName" required="" md-maxlength="50" ng-model="newEmployee.lastName">
+                        <div ng-messages="newEmployeeForm.newEmployeeLastName.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                        </div>
+                     </md-input-container>
+                  </div>
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                  <label>Contact No</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="newEmployeeContactNo" required="" ng-model="newEmployee.contactNo" md-maxlength="20">
+                  <div ng-messages="newEmployeeForm.newEmployeeContactNo.$error">
+                     <div ng-message="required">This is required.</div>
+                     <div ng-message="md-maxlength">Must be less than 20 characters.</div>
+                  </div>
+               </md-input-container>
+                  </div>
+               </div> <!-- /row -->
+               <md-input-container class="md-block">
+                  <label>Notes</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                  <input name="newEmployeeNotes" ng-model="newEmployee.notes" md-maxlength="200">
+                  <div ng-messages="newEmployeeForm.newEmployeeNotes.$error">
+                     <div ng-message="md-maxlength">Must be less than 200 characters.</div>
+                  </div>
+               </md-input-container>
+               <br>
+               <h4>Payment Details</h4>
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Regular</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in newEmployee.payment.reg">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeReg{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeReg{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="ng-min">Value cannot be negative!</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Night</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in newEmployee.payment.night">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeNight{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeNight{{timeSlot.name}}'].$error">
+                              <!-- Currently does not display error messages -->
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="ng-min">Value cannot be negative!</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+              <div class="row">
+                  <div class="col-md-2">
+                     <h5>Saturday</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in newEmployee.payment.sat">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeSat{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeSat{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="ng-min">Value cannot be negative!</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Sunday</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in newEmployee.payment.sun">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeSun{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeSun{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="ng-min">Value cannot be negative!</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+            </form>
+         </md-tab>
+         
+         <!--Selected employee edit page-->
+         <md-tab label="Selected" ng-disabled="!selected.given_names"><!-- New employee -->
+            <form name="EmployeeForm">
+               <div class="row">
+                  <div class="col-md-12">
+                     <md-button ng-click="edit($event)" class="md-raised">Save Changes</md-button>
+                     <md-button ng-click="delete(selected.id,$event)" class="md-warn md-raised" ng-hide="editMode">Delete</md-button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-12">
+                     <h4>Employee Details</h4>
+                  </div>
+               </div>
+               
+               <div class="row">
+                  <div class="col-md-4">
+                     <md-input-container class="md-block">
+                        <label>Given Name(s)</label>
+                        <input name="selectedGivenName" required="" md-maxlength="60" ng-model="selected.given_names">
+                        <div ng-messages="EmployeeForm.selectedGivenName.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 60 characters.</div>
+                        </div>
+                     </md-input-container>
+                     </div>
+                     <div class="col-md-4">
+                        <md-input-container class="md-block">
+                           <label>Last Name</label>
+                           <input name="selectedLastName" required="" md-maxlength="50" ng-model="selected.last_name">
+                           <div ng-messages="EmployeeForm.selectedLastName.$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  
+                  <div class="col-md-4">
+                    <md-input-container class="md-block">
+                        <label>Contact No</label>
+                        <input name="selectedContact" required="" md-maxlength="20" ng-model="selected.contact_no">
+                        <div ng-messages="EmployeeForm.selectedContact.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 20 characters.</div>
+                        </div>
+                     </md-input-container>
+                  </div>
+                  <div class="col-md-2">
+                     
+                  </div>
+               </div>
+               <h4>Employee Notes</h4>
+               <md-input-container class="md-block">
+                        <label></label>
+                        <input name="selectedNotes" required="" md-maxlength="200" ng-model="selected.notes">
+                        <div ng-messages="EmployeeForm.selectedNotes.$error">
+                           <div ng-message="required">This is required.</div>
+                           <div ng-message="md-maxlength">Must be less than 200 characters.</div>
+                        </div>
+                     </md-input-container>
+               <br>
+               <h4>Payment Details</h4>
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Regular</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in selected.payment.reg">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeReg{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="EmployeeForm['newEmployeeReg{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Night</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in selected.payment.night">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeNight{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeNight{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+              <div class="row">
+                  <div class="col-md-2">
+                     <h5>Saturday</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in selected.payment.sat">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeSat{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeSat{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+               <div class="row">
+                  <div class="col-md-2">
+                     <h5>Sunday</h5>
+                  </div>
+                  <div ng-repeat="timeSlot in selected.payment.sun">
+                     <div class="col-md-2">
+                        <md-input-container class="md-block">
+                           <label>{{timeSlot.name}} Hours</label> <!-- TODO: Pattern validation - cant seem to get it currently -->
+                           <input name="newEmployeeSun{{timeSlot.name}}" type="number" step="any" ng-min="0" required="" ng-model="timeSlot.data">
+                           <div ng-messages="newEmployeeForm['newEmployeeSun{{timeSlot.name}}'].$error">
+                              <div ng-message="required">This is required.</div>
+                           </div>
+                        </md-input-container>
+                     </div>
+                  </div><!-- /repeat -->
+               </div> <!-- /row -->
+               
+            </form>
+         </md-tab>
+      </md-tabs>
+</md-content>
+</div>

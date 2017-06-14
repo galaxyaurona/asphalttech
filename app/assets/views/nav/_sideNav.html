@@ -1,0 +1,38 @@
+<md-sidenav style="max-height:100vh;height: 99vh;width:200px" class="md-sidenav-left md-whiteframe-z2 " md-component-id="leftNav" md-is-locked-open="$mdMedia('gt-md')">
+   <md-toolbar class="md-primary md-hue-2 border-right" >
+      <p class="md-toolbar-tools toolbar-font" style="display:inline;line-height:2em">Menu
+         <md-button class="md-accent close-button-right toolbar-font " hide-gt-md ng-click="snc.closeMenu()">
+            <i class="fa fa-close "></i>
+         </md-button>
+      </p>
+
+   </md-toolbar>
+   <md-content flex g style="max-height:90vh" class="border-right">
+      <md-list>
+
+         <md-list-item ng-repeat="item in snc.menuItems track by $index">
+
+
+            <md-menu md-position-mode="target-right target" style="width:100%;padding:0px;margin:0px">
+               <md-button class="smaller-font-button" ng-class="{'md-accent md-hue-2': item == snc.selectedItem }" style="width:100%;text-align:left;margin:0px;min-height:55px" ng-click="snc.handleMenuClick($mdOpenMenu,item)">
+                  <i class="{{item.icon}}" style="font-size:1.5em"></i>
+                  {{item.label}}
+                  <i ng-if="item.children.length>0" class="fa fa-chevron-right pull-right" style="font-size:1.2em"></i>
+               </md-button>
+               <md-menu-content width="3">
+                  <md-menu-item ng-repeat="child in item.children track by $index">
+                     <md-button class="smaller-font-button" ng-class="{'md-accent <md-hue-1></md-hue-1>': child == snc.selectedSubItem} " ng-click="snc.handleMenuClick({},child)">
+                        <i class="{{child.icon}}" style="font-size:1.5em"></i> 
+                        {{child.label}} 
+                     </md-button>
+                  </md-menu-item>
+               </md-menu-content>
+
+            </md-menu>
+
+          <md-divider ng-if="!$last" style=""></md-divider>
+         </md-list-item>
+      </md-list>
+
+   </md-content>
+</md-sidenav>

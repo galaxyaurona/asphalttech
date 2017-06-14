@@ -1,0 +1,22 @@
+
+<md-subheader flex="initial" class="md-no-sticky">
+   <h3>Invoice</h3>
+</md-subheader>
+<md-tabs md-selected="inv.selectedIndex"id="invoiceTabs" md-dynamic-height style="min-height:470px" md-border-bottom layout-fill class="tall-tabs">
+   <md-tab flex label="View" style="height:100%" layout-fill>
+      <md-content class="md-padding" style="height:100%" layout-fill layout='column'>
+         <div ng-include="'invoice/_invoice_tab_view.html'" style="display:flex" layout-fill></div>
+      </md-content>
+   </md-tab>
+   <md-tab label="New">
+      <md-content class="md-padding">
+         <div ng-include="'invoice/_invoice_tab_new.html'" layout-fill></div>
+      </md-content>
+   </md-tab>
+   <md-tab label="Selected invoice details " ng-if="inv.selectedPurchase != undefined">
+      <md-content class="md-padding">
+         <div ng-include="'invoice/_invoice_tab_selected.html'" layout-fill></div>
+      </md-content>
+   </md-tab>
+
+</md-tabs>

@@ -1,0 +1,114 @@
+<form style="padding:10px" ng-submit="clc.create(newClientForm)" name="newClientForm" novalidate class="md-whiteframe-3dp">
+
+   <md-content layout-fill layout="column" layout-gt-xs="row">
+      <md-content layout="column" flex-gt-xs="70">
+         <md-content layout="column" layout-gt-xs="row">
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Client name</label>
+               <input ng-model="clc.newClient.name" required name="name">
+               <div ng-messages="newClientForm.name.$error" role="alert" multiple>
+                  <div ng-message="required" class="my-message">Client name cannot be empty.</div>
+               </div>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Email</label>
+               <input ng-model="clc.newClient.email" type="email" name="email">
+               <div class="md-custom-warn" ng-messages="newClientForm.email.$error" ng-if="newClientForm.email.$dirty || newClientForm.$submitted">
+                  <div ng-message="email">Please enter a valid email address</div>
+               </div>
+            </md-input-container>
+
+
+
+         </md-content>
+
+         <md-content layout="column" layout-gt-xs="row" flex="100">
+            <md-input-container class="md-block" flex-gt-xs="50">
+               <label>Postal Address</label>
+               <input ng-model="clc.newClient.postal_address" name="postalAddress">
+            </md-input-container>
+            
+            <md-input-container class="md-block" flex-gt-xs="50">
+               <label>Client type</label>
+               <md-select flex name="newClientType" ng-model="clc.newClient.client_type" required>
+                  <md-option></md-option>
+                  <md-option ng-value="type.value" ng-repeat="type in clc.clientTypes">{{type.label}}</md-option>
+               </md-select>
+               <div class="md-custom-warn" ng-messages="newClientForm.newClientType.$error" ng-if="newClientForm.newClientType.$dirty || newClientForm.$submitted">
+                  <div ng-message="required">Client type is required</div>
+               </div>
+            </md-input-container>
+
+         </md-content>
+
+         <md-content layout="column" layout-gt-xs="row" flex="100">
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Credit limit($)</label>
+               <input ng-model="clc.newClient.credit_limit" type="number" step="any" name="creditLimit">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-xs="30">
+               <label>Payment terms (days)</label>
+               <input ng-model="clc.newClient.payment_term" type="text" pattern="\d*" name="paymentTerm">
+               <div class="md-custom-warn" ng-messages="newClientForm.paymentTerm.$error" ng-if="newClientForm.paymentTerm.$dirty || newClientForm.$submitted">
+                  <div ng-message="pattern">Payment term should be a whole number</div>
+               </div>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-xs="40">
+               <label>Credit status($)</label>
+               <input ng-model="clc.newClient.credit_status" type="number" step='any' name="creditStaus">
+            </md-input-container>
+
+         </md-content>
+
+
+         <md-input-container class="md-block" flex="100">
+            <label>Note</label>
+            <textarea ng-model="clc.newClient.note" class="md-raised" columns="1" rows="3"></textarea>
+         </md-input-container>
+
+      </md-content>
+
+
+
+      <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-save fa-lg'></i></md-button>
+   </md-content>
+   <md-divider style="padding-bottom:5px"></md-divider>
+
+   <md-content layout-fill>
+      <md-content layout-gt-xs="row" layout="column">
+         <h3 flex-gt-xs="50">Contact people</h3>
+         <md-button flex-gt-xs="30" class="md-primary md-raised" ng-click="clc.addNewContactPerson(clc.newClient.contact_people,$event)" flex="100" flex-gt-md="auto">
+            Add new contact person
+         </md-button>
+      </md-content>
+
+      <md-table-container>
+         <table md-table>
+            <thead md-head md-order="query.order" md-on-reorder="logOrder">
+               <tr md-row>
+                  <th md-column md-order-by="name"><span><strong>Person name</strong></span></th>
+
+                  <th md-column md-numeric md-order-by="role"><span>Role</span></th>
+                  <th md-column md-numeric md-order-by="email"><span>Email</span></th>
+                  <th md-column md-numeric md-order-by="office_contact"><span>Office Contact</span></th>
+                  <th md-column md-numeric md-order-by="mobile_contact"><span>Mobile Contact</span></th>
+                  <th md-column md-numeric><span>Remove</span></th>
+               </tr>
+            </thead>
+            <tbody md-body>
+               <tr md-row md-select="material" ng-repeat="person in clc.newClient.contact_people | orderBy: query.order">
+                  <td md-cell><strong>{{person.name}}</strong></md-cell>
+                     <td md-cell>{{person.role}} </td>
+                     <td md-cell>{{person.email}}</td>
+                     <td md-cell>{{person.office_contact}}</td>
+                     <td md-cell>{{person.mobile_contact}}</td>
+                     <td md-cell>
+                        <md-button type="button" ng-click="clc.removeContactPerson(clc.newClient.contact_people,person)" class="md-warn md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                     </td>
+               </tr>
+            </tbody>
+         </table>
+      </md-table-container>
+
+
+</form>

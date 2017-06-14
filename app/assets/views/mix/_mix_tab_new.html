@@ -1,0 +1,99 @@
+<form style="padding:10px" ng-submit="mixc.create(newMixForm)" name="newMixForm" novalidate class="md-whiteframe-3dp">
+
+   <md-content layout-fill layout-gt-xs="row" layout="column">
+      <md-input-container class="md-block" style="flex:1 1 1%">
+         <label>Name</label>
+         <input ng-model="mixc.newMix.name" required name="name">
+         <div ng-messages="newMixForm.name.$error" role="alert" multiple>
+            <div ng-message="required" class="my-message">Mix name cannot be empty.</div>
+         </div>
+      </md-input-container>
+      <md-input-container class="md-block" flex>
+         <label>Note</label>
+         <textarea ng-model="mixc.newMix.note" class="md-raised" columns="1" rows="3"></textarea>
+      </md-input-container>
+
+      <md-button type="submit" class="md-primary md-fab md-icon"><i class='fa fa-save fa-lg'></i></md-button>
+   </md-content>
+   <md-divider style="padding-bottom:5px"></md-divider>
+   <md-content layout="column">
+
+      <ng-form class="" layout-gt-xs="row" layout="column" name="addComponentForm" novalidate>
+         <md-input-container flex-gt-xs="40" flex class="md-block">
+            <label>Material</label>
+            <md-select flex name="newComponentMaterial" ng-model="mixc.newComponent.material" required>
+               <md-option></md-option>
+               <md-option ng-value="material" ng-repeat="material in mixc.materials">{{material.name}}</md-option>
+            </md-select>
+            <div class="md-custom-warn" ng-messages="addComponentForm.newComponentMaterial.$error" ng-if="addComponentForm.newComponentMaterial.$dirty || addComponentForm.$submitted">
+               <div ng-message="required">Required</div>
+            </div>
+         </md-input-container>
+         <md-input-container flex-gt-xs="30" flex class="md-block" ng-if="mixc.aggregate">
+            <label>Aggregate (%)</label>
+            <input ng-keypress="mixc.addNewComponentIfEnter($event,addComponentForm)" ng-model="mixc.newComponent.aggregate" type="number" ng-required="mixc.aggregate && !mixc.submitting" name="newComponentAggregate">
+            <div class="errors" ng-messages="addComponentForm.newComponentAggregate.$error" ng-if="addComponentForm.newComponentAggregate.$dirty || addComponentForm.$submitted">
+               <div ng-message="required">Required</div>
+            </div>
+         </md-input-container>
+
+         <md-input-container flex-gt-xs="30" flex class="md-block" ng-if="!mixc.aggregate">
+            <label>Percent (%)</label>
+            <input ng-keypress="mixc.addNewComponentIfEnter($event,addComponentForm)" ng-model="mixc.newComponent.percent" type="number" ng-required="!mixc.aggregate && !mixc.submitting" name="newComponentPercent">
+            <div class="errors" ng-messages="addComponentForm.newComponentPercent.$error" ng-if="addComponentForm.newComponentPercent.$dirty || addComponentForm.$submitted">
+               <div ng-message="required">Required</div>
+            </div>
+         </md-input-container>
+
+         <md-input-container layout-gt-xs="row" layout="column" flex-gt-xs="30" flex>
+
+            <md-switch flex ng-model="mixc.aggregate">{{mixc.aggregate ? "Aggregate" : "Percent"}}</md-switch>
+            <md-button type="button" ng-click="mixc.addComponent(addComponentForm)" class="md-primary md-fab md-icon"><i class='fa fa-plus fa-lg'></i></md-button>
+         </md-input-container>
+      </ng-form>
+
+   </md-content>
+   <md-divider style="padding-bottom:5px"></md-divider>
+   <md-content layout-fill>
+      <md-table-container>
+         <table md-table>
+            <thead md-head md-order="query.order" md-on-reorder="logOrder">
+               <tr md-row>
+                  <th md-column md-order-by="name"><span><strong>Name</strong></span></th>
+
+                  <th md-column md-numeric md-order-by="aggregate"><span>Aggregate (%)</span></th>
+                  <th md-column md-numeric md-order-by="percent"><span>Percent (%)</span></th>
+                  <th md-column md-numeric md-order-by="cost"><span>Cost</span></th>
+                  <th md-column md-numeric><span>Remove</span></th>
+               </tr>
+            </thead>
+            <tbody md-body>
+               <tr md-row md-select="material" ng-repeat="material in mixc.newMix.mix_materials | orderBy: query.order">
+                  <td md-cell><strong>{{material.material.name}}</strong></md-cell>
+
+
+                     <td md-cell>{{material.aggregate | number: 2 }} </td>
+                     <td md-cell>{{material.percent | number: 2}} %</td>
+                     <td md-cell>$ {{material.cost | number: 2}}</td>
+                     <td md-cell>
+                        <md-button type="button" ng-click="mixc.removeComponent(material)" class="md-warn md-fab md-mini md-icon"><i class='fa fa-remove'></i></md-button>
+                     </td>
+
+
+               </tr>
+            </tbody>
+            <tfoot md-foot>
+               <tr md-row>
+                  <td md-cell style="padding-bottom:8px;font-size:1.2em"><strong>Total</strong></td>
+                  <td md-cell ng-class="{'md-custom-warn':mixc.totalAgg>100}">{{mixc.totalAgg}} %</td>
+                  <td md-cell ng-class="{'md-custom-warn':mixc.totalPercent>100}">{{mixc.totalPercent}} %</td>
+                  <td md-cell>${{mixc.newMix.price_per_tonne | number: 2 }}</td>
+                  <td md-cell></td>
+               </tr>
+            </tfoot>
+         </table>
+
+      </md-table-container>
+
+
+</form>

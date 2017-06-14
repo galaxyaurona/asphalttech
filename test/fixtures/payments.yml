@@ -1,0 +1,43 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reg_8: MyString
+  reg_9: MyString
+  reg_10: MyString
+  reg_11: MyString
+  reg_12: MyString
+  night_8: MyString
+  night_9: MyString
+  night_10: MyString
+  night_11: MyString
+  night_12: MyString
+  sat_4: MyString
+  sat_5: MyString
+  sat_6: MyString
+  sat_8: MyString
+  sun_4: MyString
+  sun_5: MyString
+  sun_6: MyString
+  sun_7: MyString
+  sun_8: MyString
+
+two:
+  reg_8: MyString
+  reg_9: MyString
+  reg_10: MyString
+  reg_11: MyString
+  reg_12: MyString
+  night_8: MyString
+  night_9: MyString
+  night_10: MyString
+  night_11: MyString
+  night_12: MyString
+  sat_4: MyString
+  sat_5: MyString
+  sat_6: MyString
+  sat_8: MyString
+  sun_4: MyString
+  sun_5: MyString
+  sun_6: MyString
+  sun_7: MyString
+  sun_8: MyString

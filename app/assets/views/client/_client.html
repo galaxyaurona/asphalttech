@@ -1,0 +1,22 @@
+
+<md-subheader flex="initial" class="md-no-sticky">
+   <h3>Client</h3>
+</md-subheader>
+<md-tabs id="clientTabs" md-dynamic-height style="min-height:470px" md-border-bottom layout-fill class="tall-tabs">
+   <md-tab flex label="View" style="height:100%" layout-fill>
+      <md-content class="md-padding" style="height:100%" layout-fill layout='column'>
+         <div ng-include="'client/_client_tab_view.html'" style="display:flex" layout-fill></div>
+      </md-content>
+   </md-tab>
+   <md-tab label="New">
+      <md-content class="md-padding">
+         <div ng-include="'client/_client_tab_new.html'" layout-fill></div>
+      </md-content>
+   </md-tab>
+   <md-tab label="Selected client financial status " ng-if="clc.selectedClient != undefined">
+      <md-content class="md-padding">
+         <div ng-include="'client/_client_tab_compare.html'" layout-fill></div>
+      </md-content>
+   </md-tab>
+
+</md-tabs>

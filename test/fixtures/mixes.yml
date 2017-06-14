@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mix_material_set_id: 
+  price_per_tonne: 1.5
+  note: MyString
+
+two:
+  mix_material_set_id: 
+  price_per_tonne: 1.5
+  note: MyString

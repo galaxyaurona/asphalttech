@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order_by: MyString
+  supplier: MyString
+  date_ordered: 2016-01-31
+  order_type: MyString
+  date_of_work: MyString
+  job_id: 
+
+two:
+  order_by: MyString
+  supplier: MyString
+  date_ordered: 2016-01-31
+  order_type: MyString
+  date_of_work: MyString
+  job_id: 

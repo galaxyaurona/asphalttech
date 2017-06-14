@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Asphaltech Resources Management </title>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track'=> true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track'=> true %>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag %>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300' rel='stylesheet' type='text/css'>
+</head>
+
+<body ng-app="AsphaltechRM" ng-cloak>
+
+    <md-content layout="row" style="height:100vh" ng-controller="SideNavCtrl as snc">
+        <!-- sidenav here -->
+        <div ng-include="'nav/_sideNav.html'"></div>
+        <!-- end sidebar nav here -->
+        
+        <!-- Main page here -->
+        <md-content layout="column" style="width:100%">
+            <!--Top bar-->
+            <md-toolbar class="md-primary-accent md-hue-2 md-whiteframe-6dp ">
+                <span flex></span>
+            
+                <span class="md-toolbar-tools">
+                    <md-button  class="nav-button toolbar-font " hide-gt-md ng-click="snc.toggleMenu()"><i class="fa fa-bars" ></i></md-button>
+                
+                    <%= image_tag('asphaltech.jpg',:class => "brand-image")  %>
+                </span>
+            </md-toolbar>
+            <!--end top bar-->
+            <md-progress-linear class="md-accent" ng-show="snc.loading" style="margin: 2px 0px" md-mode="indeterminate"></md-progress-linear>
+
+            <md-content layout="column" flex layout-padding>
+                <ui-view flex></ui-view>
+            </md-content>
+           
+            
+
+        </md-content>
+    </md-content>
+    
+    <script type="text/ng-template" id="loadingModal.html">
+
+        <div class="modal-body">
+            <p class="text-center" style="font-size:2em">Loading <md-progress-circular class="md-primary" style="display:inline-block" md-mode="indeterminate" md-diameter="40px"></md-progress-circular></i></p>
+        </div>
+
+    </script>
+    
+</body>
+
+</html>

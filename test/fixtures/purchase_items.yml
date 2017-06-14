@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item_name: MyString
+  estimate: 1.5
+  actual: 1.5
+  note: MyText
+  invoice_number: MyString
+  purchase_id: 
+
+two:
+  item_name: MyString
+  estimate: 1.5
+  actual: 1.5
+  note: MyText
+  invoice_number: MyString
+  purchase_id: 

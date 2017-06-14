@@ -1,0 +1,15 @@
+<md-toolbar class="md-primary border-right">
+   <p class="md-toolbar-tools" class="page-toolbar-text">Log
+
+   </p>
+</md-toolbar>
+<md-list>
+   <md-list-item class="md-3-line" ng-repeat="log in slc.logs">
+
+      <div class="md-list-item-text" layout="column">
+         <h4 >{{ log.timestamp | date : 'dd/MM/yy h:mm a' || 'Never' }}</h4>
+         <p>{{ log.log }}</p>
+      </div>
+      <md-divider ng-hide="$last && curc.dueCallups.length>1" style=""></md-divider>
+   </md-list-item>
+</md-list>

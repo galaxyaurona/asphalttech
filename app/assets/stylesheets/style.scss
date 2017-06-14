@@ -1,0 +1,155 @@
+
+$theme: white;
+$main-font: Roboto;
+$toolbar-font-size: 1.5em;
+$primary-color: #F44336;
+$accent-color: #673AB7;
+$mix-tab-min-height: 400px;
+
+.test-class {
+  color: $theme;
+}
+
+body {
+  font-family: $main-font, serif;
+  background: $theme;
+}
+.brand-image {
+  max-height:inherit;
+}
+.nav-button {
+
+  min-width: 50px;
+  margin-right: 8px;
+}
+.toolbar-font{
+   font-size: $toolbar-font-size;
+}
+
+.close-button-right{
+  position:absolute;
+  right:0px;
+  float:right !important;
+  display:inline-block;
+}
+
+.strong-label{
+  font-weight:bolder;
+  font-size: 1.2em;
+}
+.bs-form-inline {
+  display:block;
+  width:100%;
+}
+.bs-form-control-inline {
+  display:inline-flex;
+  width:100%;
+}
+
+.border-right {
+  border-right: 2px solid gray;
+}
+.low-side-padding {
+  padding-left:3px;
+  padding-right:3px;
+  padding-bottom:5px;
+}
+.tall-tabs{
+  height:100%;
+  md-tab-content > div:first-child {
+    height: 100% !important;
+  }
+
+}
+
+.clickable {
+  cursor: pointer; cursor: hand;
+}
+#mixTabs, #clientTabs, .tall-tabs {
+  height:100%;
+   
+  > md-tabs-content-wrapper{
+    min-height: $mix-tab-min-height; 
+   
+  }
+  md-tab-content {
+      height: 100%;
+      min-height: $mix-tab-min-height; 
+      > div:first-child {
+        height: 100% !important;
+        min-height: $mix-tab-min-height; 
+        > md-content {
+          height: 100% !important;
+          min-height: $mix-tab-min-height; 
+        }
+      }
+      
+    }
+}
+
+md-input-container.no-errors .md-errors-spacer {
+  min-height:0px;
+  height:0px;
+}
+
+.page-toolbar-text {
+  display:inline;
+  font-size:1.2em;
+  line-height:2.5em
+}
+.md-custom-warn {
+  color:rgb(255,87,34) !important;
+  background-color:white !important;
+}
+.smaller-font-button {
+  font-size:11px !important;
+}
+.grid {
+  flex: 100;
+  width: 100%;
+  min-width: 800px;
+}
+.custom-cell-padding {
+  padding-right: 5px !important;
+}
+.no-margin-h {
+  margin-top:0px;
+  margin-botton: 0px;
+}
+.angular-ui-tree-handle {
+    background: #f8faff;
+    border: 1px solid #dae2ea;
+    color: #7c9eb2;
+    padding: 10px 10px;
+}
+
+.angular-ui-tree-handle:hover {
+    color: #438eb9;
+    background: #f4f6f7;
+    border-color: #dce2e8;
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.narrow-input {
+  padding:2px !important;
+}
+.tight-cell {
+  padding:1px !important;
+}
+.small-cell {
+  //max-width:70px;
+  width:80px;
+}
+
+// consider putting this in it's own file related to the partial, do not change the global css file, or at least put a class target most of it
+/*md-input-container ng-message, md-input-container data-ng-message, md-input-container x-ng-message, md-input-container [ng-message], md-input-container [data-ng-message], md-input-container [x-ng-message], md-input-container .md-char-counter {
+    position: RELATIVE; /* INSTEAD OF ABSOLUTE */
+   /* font-size: 12px;
+    line-height: 24px;
+}*/

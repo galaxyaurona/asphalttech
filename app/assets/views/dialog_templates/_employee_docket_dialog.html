@@ -1,0 +1,28 @@
+    <md-dialog>
+        <md-toolbar class="md-primary">
+            <div class="md-toolbar-tools">Add Employee to Docket</div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="container" style="max-width:1000px">
+            <md-input-container class="md-block" style="margin-top:15px;margin-bottom:0px">
+                <label>Search</label>
+                <input name="contractorSearch" ng-model="queryEmployee.given_names">
+            </md-input-container>
+            <md-list style="max-height:400px">
+                <md-list-item layout-gt-sm="row" ng-repeat="employee in jc.employees | filter:queryEmployee.given_names">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        {{employee.given_names}} {{employee.last_name}}
+                    </div>
+                    <div class="col-md-5">
+                        <md-button ng-click="addEmployee(employee)" class="md-raised">Add</md-button>
+                    </div>
+                </md-list-item>
+            </md-list>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="close()">Close</md-button>
+        </md-dialog-actions>
+    </md-dialog>

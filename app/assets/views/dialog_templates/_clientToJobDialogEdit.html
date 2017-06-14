@@ -1,0 +1,27 @@
+    <md-dialog>
+        <md-toolbar class="md-primary">
+            <div class="md-toolbar-tools">Select Client</div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="container" style="max-width:1000px">
+            <md-input-container class="md-block" style="margin-top:15px;margin-bottom:0px">
+                <label>Search</label>
+                <input name="quoteSearch" ng-model="queryClient.name">
+            </md-input-container>
+            <md-list style="max-height:400px">
+                <md-list-item layout-gt-sm="row" ng-repeat="client in jc.clients | filter:queryClient">
+                    <div class="col-md-6">
+                        {{client.name}}
+                    </div>
+                    <div class="col-md-6">
+                        <md-button ng-click="addClient(true,client)" class="md-raised">Add</md-button>
+                    </div>
+                </md-list-item>
+            </md-list>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="close()">Close</md-button>
+        </md-dialog-actions>
+    </md-dialog>

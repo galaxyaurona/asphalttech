@@ -1,0 +1,729 @@
+<md-content class="md-padding">
+    <form name="overallForm" ng-submit="edit(overallForm)" novalidate>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>View Quote 
+                                <md-button class="md-raised" type="submit">Save Changes</md-button>
+                                <md-button class="md-raised" ng-click="duplicateQuote($event)" type="button">Duplicate</md-button>
+                                <md-button class="md-raised md-primary" ng-click="openGenerateQuote($event)">Generate Quote PDF</md-button>
+                                <md-button class="md-raised md-primary" ng-click="delete($event,qc.selected.quote.id)" type="button" style="pull-right">Delete</md-button>
+                            </h3>
+                <div class="row">
+                    <div class="col-md-2">
+                        <h4>Total Cost: </h4>
+                        <h4>Expected Invoice: </h4>
+                    </div>
+                    <div class="col-md-1">
+                        <h4>{{qc.selected.quote.cost | number:2}}</h4>
+                        <h4>{{qc.selected.quote.charge | number:2}}</h4>
+                    </div>
+                    <div class="col-md-3" style="padding-top:25px">
+                        <h4>%{{(qc.selected.quote.charge - qc.selected.quote.cost)/qc.selected.quote.charge * 100 | number:2}} 
+                                        <span ng-if="((qc.selected.quote.charge - qc.selected.quote.cost)/qc.selected.quote.charge * 100) > 0"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true" style="color:green">Profit</span></span>
+                                        <span ng-if="((qc.selected.quote.charge - qc.selected.quote.cost)/qc.selected.quote.charge * 100) < 0"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true" style="color:red">Loss</span></span>
+                                    </h4>
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <ng-form name="selectedQuoteForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Job Information</h4>
+                            <div class="row">
+                                <md-input-container class="md-block">
+                                    <label>Quote Name</label>
+                                    <input name="selectedQuoteName" required="" md-maxlength="50" ng-model="qc.selected.quote.name">
+                                    <div ng-messages="selectedQuoteForm.selectedQuoteName.$error">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <md-input-container class="md-block">
+                                        <label>Street</label>
+                                        <input name="selectedQuoteStreet" md-maxlength="50" ng-model="qc.selected.quote.street">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteStreet.$error">
+                                            <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-6">
+                                    <md-input-container class="md-block">
+                                        <label>Suburb</label>
+                                        <input name="selectedQuoteSuburb" md-maxlength="50" ng-model="qc.selected.quote.suburb">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteSuburb.$error">
+                                            <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <md-input-container class="md-block" flex-gt-xs="50">
+                                        <label>Job Type</label>
+                                        <md-select flex name="selectedQuoteType" ng-model="qc.selected.quote.quote_type" required aria-label="select_type">
+                                            <md-option></md-option>
+                                            <md-option ng-value="type.data" ng-repeat="type in quote_types">{{type.name}}</md-option>
+                                        </md-select>
+                                        <div class="md-custom-warn" ng-messages="selectedQuoteForm.selectedQuoteType.$error" ng-if="selectedQuoteForm.selectedQuoteType.$dirty || overallForm.$submitted">
+                                            <div ng-message="required">Job type is required</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-6">
+                                    <md-input-container class="md-block">
+                                        <label>Duration (days)</label>
+                                        <input name="QuoteDuration" required="" type="number" min="0" ng-model="qc.selected.quote.duration">
+                                        <div ng-messages="selectedQuoteForm.QuoteDuration.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <md-button class="md-raised" ng-click="openPickClient($event,true)">Change Client</md-button>
+                                </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-7">
+                                    <md-input-container class="md-block" style="margin-top:0px">
+                                        <label>Client Name</label>
+                                        <input name="selectedQuoteClientName" required="" md-maxlength="50" ng-model="qc.selected.quote.snapshot.quote.client_name">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteClientName.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="md-maxlength">Must be less than 50 characters.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Trucking Information</h4>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <md-input-container class="md-block">
+                                        <label>Distance to site(Km)</label>
+                                        <input name="selectedQuoteDistance" required="" type="number" min="0" step="any" ng-model="qc.selected.quote.distance_to_site">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteDistance.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be greater than zero</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-6" ng-if="qc.selected.quote.snapshot.quote.costing.cartage">
+                                    <div style="margin-top:20px">
+                                         Cartage Rate: ${{qc.selected.quote.snapshot.quote.costing.cartage}}
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <md-input-container class="md-block">
+                                        <label>Number of visits</label>
+                                        <input name="selectedQuoteVisit" required="" type="number" min="0" ng-model="qc.selected.quote.visits">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteVisit.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be greater than zero</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-xs-6">
+                                    <md-input-container class="md-block">
+                                        <label>Truck hire per day</label>
+                                        <input name="selectedQuoteHire" required="" type="number" min="0" step="any" ng-model="qc.selected.quote.truck_hire">
+                                        <div ng-messages="selectedQuoteForm.selectedQuoteHire.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be greater than zero</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-form>
+                <div style="padding:50px"></div>
+
+                <!-- Employee -->
+                <div class="row" ng-hide="!qc.selected.quote.quote_type">
+                    <ng-form name="selectedQuoteEmployeeForm">
+                        <div class="col-md-2">
+                            <a ng-click="collapseEditEmployee = !collapseEditEmployee" class="clickable"><h4>Employees</h4></a>
+                        </div>
+                        <div class="col-md-3">
+                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                <label>EST Cost</label>
+                                <input name="employeeCost" type="number" required="" min="0" ng-model="qc.selected.quote.snapshot.quote.costing.employee_cost" disabled="" style="color:black" step="any">
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-3">
+                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                <label>Charging</label>
+                                <input name="employeeCharge" type="number" required="" min="0" disabled="" style="color:black" ng-model="qc.selected.quote.snapshot.quote.costing.employee_charge" step="any">
+                                <div ng-messages="selectedQuoteEmployeeForm.employeeCharge.$error">
+                                    <div ng-message="required">This is required.</div>
+                                    <div ng-message="min">Must be positive.</div>
+                                </div>
+
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-2">
+                            <div ng-hide="qc.selected.quote.snapshot.quote.costing.employee_charge == qc.selected.quote.snapshot.quote.costing.employee_original_charge">
+                                <md-button class="md-raised" ng-click="qc.selected.quote.snapshot.quote.costing.employee_charge = qc.selected.quote.snapshot.quote.costing.employee_original_charge">Un-Modify</md-button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <md-button class="md-raised" ng-click="openEmployeeDialogEdit($event)">Add</md-button>
+                        </div>
+                    </ng-form>
+                </div>
+                <div uib-collapse="collapseEditEmployee" ng-hide="!qc.selected.quote.quote_type">
+                    <md-list>
+                        <md-list-item class="row" style="padding-right:0px">
+                            <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Name</h5></a></div>
+                            <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Days</h5></a></div>
+                            <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Nights</h5></a></div>
+                            <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Sats</h5></a></div>
+                            <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Suns</h5></a></div>
+                            <div class="col-md-2"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Cost</h5></a></div>
+                            <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Margin</h5></a></div>
+                            <div class="col-md-3"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Charge</h5></a></div>
+                        </md-list-item>
+                        <md-list-item class="row" ng-repeat="data in qc.selected.employees" style="padding-right:0px">
+                            <ng-form name="quoteEmployeeDisplayForm" style="width:100%">
+                                <div class="col-md-2">
+                                    <div class="row">
+
+                                        <div class="col-xs-4">
+                                            <button class="btn" ng-click="deleteEmployeeEdit(data.id,false)" style="margin-bottom:20px" ng-hide="data.details.quote_id">X</button>
+                                            <button class="btn" ng-click="deleteEmployeeEdit(data.id,true)" style="margin-bottom:20px" ng-show="data.details.quote_id">X</button>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div style="margin-top:5px">{{data.given_names}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                        <label></label>
+                                        <input name="employeeDays" type="number" required="" min="0" ng-model="data.details.days">
+                                        <div ng-messages="quoteEmployeeDisplayForm.employeeDays.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-1">
+                                    <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                        <label></label>
+                                        <input name="employeeNight" type="number" required="" min="0" ng-model="data.details.nights">
+                                        <div ng-messages="quoteEmployeeDisplayForm.employeeNight.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-1">
+                                    <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                        <label></label>
+                                        <input name="employeeSat" type="number" required="" min="0" ng-model="data.details.saturdays">
+                                        <div ng-messages="quoteEmployeeDisplayForm.employeeSat.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-1">
+                                    <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                        <label></label>
+                                        <input name="employeeSun" type="number" required="" min="0" ng-model="data.details.sundays">
+                                        <div ng-messages="quoteEmployeeDisplayForm.employeeSun.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div style="margin-bottom:25px"> ${{data.details.cost | number:2}}</div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div style="margin-bottom:25px">%{{data.details.margin | number:2}}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                <label></label>
+                                                <input name="employeeCharge" type="number" required="" min="0" ng-model="data.details.charge" step="any">
+                                                <div ng-messages="quoteEmployeeDisplayForm.employeeCharge.$error">
+                                                    <div ng-message="required">This is required.</div>
+                                                    <div ng-message="min">Must be positive.</div>
+                                                </div>
+                                            </md-input-container>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <md-button ng-hide="data.details.charge == data.details.original_charge" style="md-raised" ng-click="data.details.charge = data.details.original_charge">M</md-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-form>
+                        </md-list-item>
+                    </md-list>
+                    <div style="padding:30px" ng-if="qc.selected.employees.length == 0">
+                        <hr>
+                    </div>
+                    <div style="padding:10px" ng-if="qc.selected.employees.length > 0">
+                        <hr>
+                    </div>
+                </div>
+                <!-- End Employee -->
+
+
+                <!-- Contractor -->
+                <div class="row" ng-hide="!qc.selected.quote.quote_type">
+                    <ng-form name="selectedContractorForm">
+                        <div class="col-md-2">
+                            <a ng-click="collapseEditContractor = !collapseEditContractor" class="clickable"><h4>Contractors</h4></a>
+                        </div>
+
+                        <div class="col-md-3">
+                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                <label>EST Cost</label>
+                                <input name="contractorCost" type="number" required="" min="0" ng-model="qc.selected.quote.snapshot.quote.costing.contractor_cost" disabled="" style="color:black" step="any">
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-3">
+                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                <label>Charging</label>
+                                <input name="contractorCharge" type="number" required="" disabled="" style="color:black" min="0" ng-model="qc.selected.quote.snapshot.quote.costing.contractor_charge" step="any">
+                                <div ng-messages="selectedContractorForm.contractorCharge.$error">
+                                    <div ng-message="required">This is required.</div>
+                                    <div ng-message="min">Must be positive.</div>
+                                </div>
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-2">
+                            <div ng-hide="qc.selected.quote.snapshot.quote.costing.contractor_charge == qc.selected.quote.snapshot.quote.costing.contractor_original_charge">
+                                <md-button class="md-raised" ng-click="qc.selected.quote.snapshot.quote.costing.contractor_charge = qc.selected.quote.snapshot.quote.costing.contractor_original_charge">Un-Modify</md-button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <md-button class="md-raised" ng-click="openContractorDialogEdit($event)">Add</md-button>
+                        </div>
+                    </ng-form>
+                </div>
+                <div uib-collapse="collapseEditContractor" ng-hide="!qc.selected.quote.quote_type">
+
+                    <md-list>
+                        <md-list-item class="row" style="padding-right:0px">
+                            <div class="col-md-2" style="padding-left:0px"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Name</h5></a></div>
+                            <div class="col-md-2" style="padding-left:0px"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Type</h5></a></div>
+                            <div class="col-md-1" style="padding-left:0px"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Quantity</h5></a></div>
+                            <div class="col-md-2" style="padding-left:0px">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Rate</h5></a>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Unit</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="padding-left:0px"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Cost</h5></a></div>
+                            <div class="col-md-1" style="padding-left:0px"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Margin</h5></a></div>
+                            <div class="col-md-2" style="padding-left:0px"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Charge</h5></a></div>
+                        </md-list-item>
+                        <md-list-item class="row" ng-repeat="data in qc.selected.contractors track by $index" style="padding-right:0px">
+                            <ng-form name="quoteContractorDisplay" style="width:100%">
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <button class="btn" ng-click="deleteContractorEdit(data.id,false)" type="button" style="margin-bottom:20px" ng-hide="data.details.quote_id">X</button>
+                                            <button class="btn" ng-click="deleteContractorEdit(data.id,true)" type="button" style="margin-bottom:20px" ng-show="data.details.quote_id">X</button>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div style="margin-top:10px">{{data.name}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <md-input-container class="md-block" flex-gt-xs="50" style="margin-top:0px">
+                                        <label></label>
+                                        <md-select flex name="contractorType" ng-model="data.details.contractor_type" required aria-label="select_type">
+                                            <md-option></md-option>
+                                            <md-option ng-value="type.data" ng-repeat="type in contractor_types">{{type.name}}</md-option>
+                                        </md-select>
+                                        <div class="md-custom-warn" ng-messages="quoteContractorDisplay.contractorType.$error" ng-if="quoteContractorDisplay.contractorType.$dirty || overallForm.$submitted">
+                                            <div ng-message="required">Contractor type is required</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-1">
+                                    <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                        <label></label>
+                                        <input name="contractorQuantity" type="number" required="" min="0" ng-model="data.details.quantity" step="any">
+                                        <div ng-messages="quoteContractorDisplay.contractorCost.$error">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="min">Must be positive.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-2" style="padding:0px">
+                                    <div class="row" style="padding:0px;margin:0px">
+                                        <div class="col-xs-6" style="padding:0px;margin:0px">
+                                            <div style="margin-top:10px"> ${{data.details.rate | number:2}}</div>
+                                        </div>
+                                        <div class="col-xs-6" style="padding:0px;margin:0px">
+                                            <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                <label></label>
+                                                <input name="selectedContractorUnit" md-maxlength="8" ng-model="data.details.unit_type">
+                                                <div ng-messages="quoteContractorDisplay.selectedContractorUnit.$error">
+                                                    <div ng-message="md-maxlength">Must be
+                                                        <=8 </div>
+                                                    </div>
+                                            </md-input-container>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-2">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="contractorCost" type="number" required="" min="0" ng-model="data.details.cost" step="any">
+                                            <div ng-messages="quoteContractorDisplay.contractorCost.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div style="margin-top:10px">%{{(data.details.charge - data.details.cost)/data.details.charge *100 | number:2}}</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-9" style="padding-right:0px">
+                                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                    <label></label>
+                                                    <input name="contractorCharge" type="number" required="" min="0" ng-model="data.details.charge">
+                                                    <div ng-messages="quoteContractorDisplay.contractorCharge.$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                        <div ng-message="min">Must be positive.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div class="col-md-3" style="padding-left:5px">
+                                                <md-button style="margin-top:0px" ng-click="openNotesContractorEdit($event,data)" class="md-fab md-mini md-primary">N</md-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </ng-form>
+                        </md-list-item>
+
+                    </md-list>
+
+                    <div style="padding:30px" ng-if="qc.selected.contractors.length == 0">
+                        <hr>
+                    </div>
+                    <div style="padding:10px" ng-if="qc.selected.contractors.length > 0">
+                        <hr>
+                    </div>
+                    </div>
+                    <!-- End Contractor -->
+
+                    <!-- Material -->
+                    <div class="row" ng-hide="qc.selected.quote.quote_type == 4 || !qc.selected.quote.quote_type">
+                        <ng-form name="newQuoteMixForm">
+                            <div class="col-md-2">
+                                <a ng-click="collapseEditMaterial = !collapseEditMaterial" class="clickable"><h4>Mixes</h4></a>
+                            </div>
+
+                            <div class="col-md-3">
+                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                    <label>EST Cost</label>
+                                    <input name="mixCost" type="number" required="" min="0" ng-model="qc.selected.quote.snapshot.quote.costing.mix_cost" disabled="" style="color:black" step="any">
+                                </md-input-container>
+                            </div>
+                            <div class="col-md-3">
+                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                    <label>Charging</label>
+                                    <input name="mixCharge" type="number" required="" min="0" disabled="" style="color:black" ng-model="qc.selected.quote.snapshot.quote.costing.mix_charge" step="any">
+                                    <div ng-messages="newQuoteMixForm.mixCharge.$error">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="min">Must be positive.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div class="col-md-2">
+                                <div ng-hide="qc.selected.quote.snapshot.quote.costing.mix_charge == qc.selected.quote.snapshot.quote.costing.mix_original_charge">
+                                    <md-button class="md-raised" ng-click="qc.selected.quote.snapshot.quote.costing.mix_charge = qc.selected.quote.snapshot.quote.costing.mix_original_charge">Un-Modify</md-button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <md-button class="md-raised" ng-click="openMixDialogEdit($event)">Add</md-button>
+                            </div>
+                        </ng-form>
+                    </div>
+                    <div uib-collapse="collapseEditMaterial" ng-hide="qc.selected.quote.quote_type == 4 || !qc.selected.quote.quote_type">
+                        <md-list>
+                            <md-list-item class="row">
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Name</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Thickness(mm)</h5></a></div>
+                                <div class="col-md-1" style="padding-left:0px;padding-right:0px"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Area(m2)</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Tonnes</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Cost</h5></a></div>
+                                <div class="col-md-1"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Margin</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Charge</h5></a></div>
+                            </md-list-item>
+
+                            <md-list-item class="row" ng-repeat="data in qc.selected.mixes">
+                                <ng-form name="displayMixForm" style="width:100%">
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <button class="btn" ng-click="deleteMixEdit(data.id,false)" style="margin-bottom:20px" ng-hide="data.details.quote_id">X</button>
+                                                <button class="btn" ng-click="deleteMixEdit(data.id,true)" style="margin-bottom:20px" ng-show="data.details.quote_id">X</button>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <div style="margin-top:5px">{{data.name}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="mixThickness" type="number" required="" min="0" ng-model="data.details.thickness">
+                                            <div ng-messages="displayMixForm.mixThickness.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left:0px;padding-right:0px">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="mixArea" type="number" required="" min="0" ng-model="data.details.area">
+                                            <div ng-messages="displayMixForm.mixArea.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                    <label></label>
+                                                    <input name="mixTonnes" type="number" required="" min="0" ng-model="data.details.tonnes" step="any">
+                                                    <div ng-messages="displayMixForm.mixTonnes.$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                        <div ng-message="min">Must be positive.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div class="col-xs-3" style="padding-left:0px">
+                                                <button class="btn btn-default" type="button" ng-click="data.details.tonnes = data.costing.original_tonnes" ng-hide="data.details.tonnes == data.costing.original_tonnes">M</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div style="margin-bottom:25px">${{data.costing.cost | number:2}}</div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div style="margin-bottom:25px">%{{data.costing.margin | number:2}}</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                    <label></label>
+                                                    <input name="mixCharge" type="number" required="" min="0" ng-model="data.costing.charge" step="any">
+                                                    <div ng-messages="displayMixForm.mixCharge.$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                        <div ng-message="min">Must be positive.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div class="col-xs-3" style="padding-left:0px">
+                                                <button class="btn btn-default" type="button" ng-click="data.costing.charge = data.costing.original_charge" ng-hide="data.costing.charge == data.costing.original_charge">M</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-form>
+                            </md-list-item>
+
+                        </md-list>
+
+                        <div style="padding:30px" ng-if="qc.selected.mixes.length == 0">
+                            <hr>
+                        </div>
+                        <div style="padding:10px" ng-if="qc.selected.mixes.length > 0">
+                            <hr>
+                        </div>
+                    </div>
+                    <!-- End Material -->
+
+                    <!-- Other items -->
+                    <div class="row" ng-hide="!qc.selected.quote.quote_type">
+                        <ng-form name="quoteOtherTopbar">
+                            <div class="col-md-2">
+                                <a ng-click="collapseEditOther = !collapseEditOther" class="clickable"><h4>Other</h4></a>
+                            </div>
+
+                            <div class="col-md-3">
+                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                    <label>EST Cost</label>
+                                    <input name="otherCost" type="number" required="" min="0" ng-model="qc.selected.quote.snapshot.quote.costing.other_cost" disabled="" style="color:black" step="any">
+                                </md-input-container>
+                            </div>
+                            <div class="col-md-3">
+                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                    <label>Charging</label>
+                                    <input name="otherCharge" type="number" required="" min="0" disabled="" style="color:black" ng-model="qc.selected.quote.snapshot.quote.costing.other_charge" step="any">
+                                    <div ng-messages="quoteOtherTopbar.otherCharge.$error">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="min">Must be positive.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div class="col-md-2">
+                                <div ng-hide="qc.quote.snapshot.quote.costing.other_charge == qc.quote.snapshot.quote.costing.other_original_charge">
+                                    <md-button class="md-raised" ng-click="qc.quote.snapshot.quote.costing.other_charge = qc.quote.snapshot.quote.costing.other_original_charge">Un-Modify</md-button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <md-button class="md-raised" ng-click="addOther(true)">Add</md-button>
+                            </div>
+                        </ng-form>
+                </div>
+                    <div uib-collapse="collapseEditOther" ng-hide="!qc.selected.quote.quote_type">
+                        <md-list>
+                            <md-list-item class="row">
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.name',reverse);reverse=!reverse" class="clickable"><h5>Name</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Type</h5></a></div>
+                                <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Quantity</h5></a></div>
+                                <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Rate</h5></a></div>
+                                <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Unit</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Cost</h5></a></div>
+                                <div class="col-md-1"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Margin</h5></a></div>
+                                <div class="col-md-2"><a ng-click="order('minute','meeting.date',reverse);reverse=!reverse" class="clickable"><h5>Charge</h5></a></div>
+                            </md-list-item>
+
+                            <md-list-item class="row" ng-repeat="data in qc.selected.others">
+                                <ng-form name="selectedQuoteOtherDisplay" style="width:100%">
+                                    <div class="col-xs-2">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <button class="btn" ng-click="deleteOtherEdit(data.id,false)" type="button" style="margin-bottom:20px" ng-hide="data.quote_id">X</button>
+                                                <button class="btn" ng-click="deleteOtherEdit(data.id,true)" type="button" style="margin-bottom:20px" ng-show="data.quote_id">X</button>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                    <label></label>
+                                                    <input name="otherName" required="" ng-model="data.name">
+                                                    <div ng-messages="selectedQuoteOtherDisplay.otherName.$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <md-input-container class="md-block" style="width:100%;margin:0px">
+                                            <label></label>
+                                            <md-select name="otherType" ng-model="data.other_type" required aria-label="select_type">
+                                                <md-option></md-option>
+                                                <md-option ng-value="type.data" ng-repeat="type in other_types">{{type.name}}</md-option>
+                                            </md-select>
+                                            <div class="md-custom-warn" ng-messages="selectedQuoteOtherDisplay.otherType.$error">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
+                                        </md-input-container>
+                                    
+                                    </div>
+                                    <div class="col-md-1">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="otherQuantity" type="number" min="0" ng-model="data.quantity">
+                                            <div ng-messages="selectedQuoteOtherDisplay.otherQuantity.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="otherRate" type="number" min="0" ng-model="data.rate">
+                                            <div ng-messages="selectedQuoteOtherDisplay.otherRate.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="otherUnit" ng-model="data.unit_type">
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                            <label></label>
+                                            <input name="otherCost" type="number" required="" min="0" ng-model="data.cost">
+                                            <div ng-messages="selectedQuoteOtherDisplay.otherCost.$error">
+                                                <div ng-message="required">This is required.</div>
+                                                <div ng-message="min">Must be positive.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <div style="margin-bottom:25px" ng-show="data.cost > 0 && data.charge > 0">%{{(data.charge - data.cost)/data.charge * 100 | number:2}}</div>
+                                        <div style="margin-bottom:25px" ng-hide="data.cost > 0 && data.charge > 0">%0</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <md-input-container class="md-block" style="margin-top:0px;margin-bottom:0px">
+                                                    <label></label>
+                                                    <input name="otherCharge" type="number" required="" ng-model="data.charge">
+                                                    <div ng-messages="selectedQuoteOtherDisplay.otherCharge.$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <md-button ng-click="openNotesOther($event,data)" class="md-fab md-mini md-primary">N</md-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-form>
+                            </md-list-item>
+
+                            <div style="padding:30px" ng-if="qc.selected.others.length == 0">
+                                <hr>
+                            </div>
+                            <div style="padding:10px" ng-if="qc.selected.others.length > 0">
+                                <hr>
+                            </div>
+                        </md-list>
+                    </div>
+                    <!-- /Other items -->
+
+                </div>
+                <!-- /Panel Body -->
+            </div>
+            <!-- /Panel -->
+    </form>
+</md-content>

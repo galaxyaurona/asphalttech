@@ -1,0 +1,2 @@
+module SchedulerLogHelper
+end
